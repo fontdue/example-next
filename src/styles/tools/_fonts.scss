@@ -1,0 +1,29 @@
+/**
+ * Accepts font-size, line-height, and letter-spacing
+ * @usage fontSize(14px, 18px, 40)
+ * @usage fontSize(14px, 18px)
+ * @usage fontSize(14px)
+ */
+@use "sass:math";
+
+@mixin fontSize($font-size: null, $line-height: null, $letter-spacing: null) {
+  @if($font-size) {
+    font-size: $font-size;
+  }
+
+  @if($line-height) {
+    @include lineHeight($line-height, $font-size);
+  }
+
+  @if($letter-spacing) {
+    @include letterSpacing($letter-spacing);
+  }
+}
+
+@mixin lineHeight($line-height, $font-size) {
+  line-height: #{math.div($line-height, $font-size)};
+}
+
+@mixin letterSpacing($letter-spacing) {
+  letter-spacing: #{$letter-spacing * 0.001}em;
+}

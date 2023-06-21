@@ -1,0 +1,11 @@
+$z-indexes: (
+  site: (
+    layers: (site, nav, precart, modal, notification, cart)
+  ),
+  precart: (
+    layers: (precart, notification)
+  ),
+  cart: (
+    layers: (site, checkout-modal)
+  )
+)

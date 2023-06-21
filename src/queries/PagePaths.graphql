@@ -1,0 +1,13 @@
+query PagePaths {
+  viewer {
+    pages(first: 999) {
+      edges {
+        node {
+          slug {
+            name
+          }
+        }
+      }
+    }
+  }
+}

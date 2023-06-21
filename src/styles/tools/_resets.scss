@@ -1,0 +1,28 @@
+/*
+ * Reset many styles set by default in browsers on buttons and inputs
+ */
+@mixin resetButton {
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: inherit;
+  text-align: inherit;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  text-transform: inherit;
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+}
+
+/*
+ * Reset styles set by default in browsers on link elements
+ */
+@mixin resetLink {
+  text-decoration: none;
+}

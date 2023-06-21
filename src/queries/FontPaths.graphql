@@ -1,0 +1,11 @@
+query FontPaths {
+  viewer {
+    fontCollections(first: 99, onlyRoots: true) {
+      edges {
+        node {
+          slug { name }
+        }
+      }
+    }
+  }
+}

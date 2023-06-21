@@ -1,0 +1,21 @@
+.collection-styles {
+  line-height: normal;
+
+  & + & {
+    margin-top: 1.5em;
+  }
+
+  &__label {
+    color: var(--secondary_text_color);
+    margin-bottom: 0.5em;
+  }
+
+  &__group {
+    @include fontSize(42px);
+    display: block;
+
+    [data-collection-type="superfamily"] & {
+      @include fontSize(34px);
+    }
+  }
+}

@@ -1,0 +1,48 @@
+.cookie-notification {
+  @extend %bottom-notification;
+
+  a {
+    color: inherit;
+  }
+
+  &__container {
+    @extend %bottom-notification__container;
+  }
+
+  &__text-container {
+    @extend %bottom-notification__text-container;
+  }
+
+  &__label {
+    @extend %bottom-notification__label;
+  }
+
+  &__text {
+    @extend %bottom-notification__text;
+  }
+
+  &__button {
+    @include resetButton();
+    @include fontSize(18px, 22px);
+    background-color: rgba(color(black), 0);
+    border: 1px solid currentColor;
+    padding: 10px;
+    margin-top: 15px;
+    min-width: 120px;
+    text-align: center;
+    transition: background-color 200ms ease-out, color 200ms ease-out;
+
+    @include minWidth(tablet) {
+      margin-top: 0;
+    }
+
+    &:hover {
+      background-color: color(black);
+      color: color(light-green);
+    }
+
+    .icon {
+      margin-right: 12px;
+    }
+  }
+}

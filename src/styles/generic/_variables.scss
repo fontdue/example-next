@@ -1,0 +1,35 @@
+@use "sass:math";
+
+:root {
+  --window-height: 100vh;
+  --gutter: 10px;
+  --outer-gutter: 10px;
+  --background-color: #{color(white)};
+  --text-color: #{color(black)};
+  --precart-width: 100%;
+
+  @include minWidth(mediumMobile) {
+    --outer-gutter: 20px;
+  }
+
+  @include minWidth(tablet) {
+    --columns: 3;
+    --gutter: 30px;
+    --outer-gutter: 40px;
+  }
+
+  @include minWidth(desktop) {
+    --columns: 4;
+    --gutter: #{(math.div(20px, 960px) * 100)}vw;
+    --outer-gutter: #{(math.div(20px, 960px) * 100)}vw;
+    --precart-width: calc(
+      (((100vw - (2 * var(--outer-gutter))) - ((var(--columns) - 1) * var(--gutter))) / var(--columns)) + var(--outer-gutter)
+    );
+  }
+
+  @include minWidth(hires) {
+    --columns: 5;
+    --gutter: 40px;
+    --outer-gutter: 140px;
+  }
+}

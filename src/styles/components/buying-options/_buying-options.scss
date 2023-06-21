@@ -1,0 +1,15 @@
+.buying-options {
+  @include resetButton();
+  background-color: color(black);
+  color: color(white);
+  padding: 10px 10px 11px 10px;
+  width: 100%;
+
+  @include maxWidth(desktop) {
+    display: none;
+  }
+
+  &:hover {
+    background-color: color(blue);
+  }
+}

@@ -1,0 +1,43 @@
+query RootLayout {
+  viewer {
+    fontCollections(onlyRoots: true, first: 2) {
+      edges {
+        node {
+          id
+        }
+      }
+    }
+    pages(first: 12) {
+      edges {
+        node {
+          id
+          title
+          slug {
+            name
+          }
+        }
+      }
+    }
+    settings {
+      title
+      footerText(format: HTML)
+      htmlHead
+      faviconMarkup
+      uiFontStyle {
+        name
+        cssFamily
+        webfontSources {
+          url
+          format
+        }
+      }
+    }
+    logo {
+      url
+      meta {
+        width
+        height
+      }
+    }
+  }
+}

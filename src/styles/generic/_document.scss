@@ -1,0 +1,61 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+body {
+  @include outerGutters();
+  background-color: var(--primary_background_color);
+  color: var(--primary_text_color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: auto;
+  line-height: 1.5;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1;
+}
+
+button {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+a {
+  color: var(--link_color);
+
+  &:hover {
+    color: var(--link_hover_color);
+  }
+
+  &.active {
+    color: var(--active_link_color);
+  }
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.icon {
+  font-size: 26px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+
+  svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+  }
+}

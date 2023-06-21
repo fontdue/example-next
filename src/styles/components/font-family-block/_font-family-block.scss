@@ -1,0 +1,68 @@
+.font-family-block {
+  $this: &;
+  position: relative;
+
+  &[data-size="wide"] {
+    @include minWidth(tablet) {
+      grid-column-end: span 2;
+    }
+
+    @include minWidth(desktop) {
+      grid-column-end: span 3;
+    }
+  }
+
+  &__label {
+    width: 65%;
+  }
+
+  &__name {
+    display: none;
+
+    [data-collection-type="superfamily"] {
+      display: initial;
+    }
+  }
+
+  &__count {
+    @include fontSize(14px, 20px);
+
+    [data-collection-type="superfamily"] {
+      &:before {
+        content: '(';
+      }
+
+      &:after {
+        content: ')';
+      }
+    }
+
+
+    #{$this}[data-buy-button-hovered="true"] & {
+      color: color(blue);
+    }
+
+    #{$this}[data-buy-button-hovered="true"][data-selected="true"] & {
+      color: color(red);
+    }
+  }
+
+  &__lists {
+    word-break: break-all;
+    word-break: break-word;
+  }
+
+  &__list {
+    #{$this}[data-size="wide"] & {
+      display: inline;
+    }
+
+    &__item {
+      @include fontSize(26px, 32px);
+
+      #{$this}[data-size="wide"] & {
+        display: inline;
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+@function z-index($name, $layer) {
+    $context: map-get($z-indexes, $name);
+    $layers: map-get($context, "layers");
+    $index: index($layers, $layer);
+
+    @return $index;
+}

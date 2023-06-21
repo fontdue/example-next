@@ -1,0 +1,13 @@
+.carousel {
+  &[data-loaded="false"] swiper-slide:nth-child(n + 2) {
+    display: none;
+  }
+  --swiper-theme-color: var(--primary_text_color);
+}
+
+.carousel-pagination {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

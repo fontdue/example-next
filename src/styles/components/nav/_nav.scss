@@ -1,0 +1,30 @@
+.nav {
+  display: grid;
+  grid-gap: var(--gutter);
+  grid-template-columns: auto max-content max-content;
+  align-items: center;
+  border-bottom: 1px solid var(--horizontal_rule_color);
+  padding: 20px 0;
+  min-height: 70px;
+
+  &__links {
+    display: grid;
+    grid-column-gap: 30px;
+    align-items: center;
+
+    @include minWidth(desktop) {
+      grid-template-columns: 220px;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+    }
+  }
+
+  &__link {
+    color: var(--primary_text_color);
+    text-decoration: none;
+  }
+
+  &__item[data-label="cart"] {
+    margin-left: auto;
+  }
+}

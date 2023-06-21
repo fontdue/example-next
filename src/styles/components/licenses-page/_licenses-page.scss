@@ -1,0 +1,35 @@
+.licenses-page {
+  @include minWidth(desktop) {
+    display: grid;
+    grid-template-columns: 220px auto;
+    grid-template-rows: max-content;
+    grid-column-gap: 30px;
+  }
+
+  &__title {
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+  }
+
+  &__text {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2;
+    margin-top: 1em;
+    max-width: 40em;
+  }
+
+  &__licenses {
+    grid-column: 1 / span 1;
+  }
+
+  &__license {
+    &__link {
+      @include resetLink();
+      color: var(--link_color);
+
+      &.active {
+        color: var(--active_link_color);
+      }
+    }
+  }
+}

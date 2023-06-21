@@ -1,0 +1,9 @@
+query Licenses {
+  viewer {
+    licenses {
+      id
+      name
+      slug { name }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+query Sitemap {
+  viewer {
+    fontCollections(onlyRoots: true, first: 999) {
+      edges {
+        node {
+          slug { name }
+        }
+      }
+    }
+
+    articles(first: 999) {
+      edges {
+        node {
+          slug { name }
+        }
+      }
+    }
+
+    pages(first: 999) {
+      edges {
+        node {
+          slug { name }
+        }
+      }
+    }
+
+    licenses {
+      slug { name }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+query Page ($slug: String!){
+  viewer {
+    slug(name: $slug) {
+      page {
+        title
+        text(format: HTML)
+        pageMetadata {
+          title
+          description
+          keywords
+        }
+      }
+    }
+  }
+}

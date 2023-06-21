@@ -1,0 +1,59 @@
+.collection-info {
+  margin-top: 1em;
+
+  &__images {
+    margin-bottom: 1.5em;
+
+    img, video {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  &__name {
+    margin-bottom: 1.5em;
+  }
+
+  &__single-style-name {
+    padding-top: 3rem;
+    text-align: center;
+    font-size: 100px;
+  }
+
+  &__styles {
+    padding: 3rem 0;
+  }
+
+  &__buy {
+    margin-bottom: 4.5em;
+    display: flex;
+  }
+
+  &__minisite-link {
+    @include resetLink;
+    margin-left: 40px;
+    padding: 20px 60px;
+    border: 1px solid var(--button_border_color);
+    background: var(--button_background_color);
+    color: var(--button_text_color);
+
+    &:hover {
+      border-color: var(--button_hover_border_color);
+      background: var(--button_hover_background_color);
+      color: var(--button_hover_text_color);
+    }
+  }
+
+  &__styles,
+  &__buy {
+    text-align: center;
+    justify-content: center;
+  }
+
+  &[data-collection-type="superfamily"] &__styles {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 40px;
+  }
+}

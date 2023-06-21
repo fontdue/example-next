@@ -1,0 +1,26 @@
+query Article($slug: String!) {
+  viewer {
+    slug(name: $slug) {
+      article {
+        title
+        images {
+          id
+          url
+          description
+          meta {
+            width
+            height
+          }
+        }
+        tags
+        body(format: HTML)
+        pageMetadata {
+          title
+          description
+          keywords
+        }
+      }
+    }
+    articlesTags
+  }
+}

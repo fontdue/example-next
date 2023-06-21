@@ -1,0 +1,11 @@
+query License($slug: String!) {
+  viewer {
+    slug(name: $slug) {
+      license {
+        id
+        name
+        text(format: HTML)
+      }
+    }
+  }
+}

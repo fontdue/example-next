@@ -1,0 +1,12 @@
+schema: https://tenant-9.fontdue.local/graphql
+documents: './src/queries/*.graphql'
+generates:
+  operations-types.ts:
+    config:
+      onlyOperationTypes: true
+      preResolveTypes: true
+      skipTypename: true
+      avoidOptionals: true
+    plugins:
+      - typescript
+      - typescript-operations

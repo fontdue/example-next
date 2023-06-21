@@ -1,0 +1,36 @@
+.articles {
+  margin-top: 1.5em;
+
+  @include minWidth(desktop) {
+    display: grid;
+    grid-template-columns: 220px auto;
+    grid-column-gap: 30px;
+  }
+
+  &__items {
+    @include minWidth(desktop) {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 1.5em;
+    }
+  }
+
+  &__tags {
+    a {
+      text-decoration: none;
+    }
+  }
+
+  &__item {
+    display: block;
+    margin-bottom: 1.5em;
+    text-decoration: none;
+
+    &__image {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-bottom: 0.5em;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+query ArticlePaths {
+  viewer {
+    articles(first: 999) {
+      edges {
+        node {
+          slug {
+            name
+          }
+        }
+      }
+    }
+  }
+}

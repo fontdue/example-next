@@ -1,0 +1,26 @@
+query Articles($tags: [String!]) {
+  viewer {
+    articles(first: 99, tags: $tags) {
+      edges {
+        node {
+          id
+          title
+          path
+          tags
+          slug {
+            name
+          }
+          images {
+            url
+            description
+            meta {
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+    articlesTags
+  }
+}

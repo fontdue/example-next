@@ -1,0 +1,74 @@
+fragment FontDetailCollection on FontCollection {
+  id
+  name
+  collectionType
+  isVariableFont
+  cssUrl
+  sku { id }
+  bundles {
+    sku { id }
+  }
+  fontStyles {
+    name
+    cssFamily
+    cssWeight
+    cssStyle
+    sku { id }
+    variableInstances {
+      name
+      coordinates {
+        axis
+        value
+      }
+    }
+  }
+}
+
+fragment FontDetail on FontCollection {
+  ...FontDetailCollection
+  shortDescription
+  description
+  pdfs {
+    url
+    thumbnailUrl
+    name
+  }
+  featureStyle {
+    cssFamily
+    name
+
+    family {
+      cssUrl
+    }
+  }
+  children(collectionTypes: [FAMILY]) {
+    ...FontDetailCollection
+  }
+  images {
+    url
+    description
+    meta {
+      mimeType
+      width
+      height
+    }
+  }
+  minisiteLink
+}
+
+
+query Font ($slug: String!) {
+  viewer {
+    slug(name: $slug) {
+      fontCollection {
+        ...FontDetail
+
+        pageMetadata {
+          title
+          description
+          keywords
+        }
+      }
+    }
+  }
+}

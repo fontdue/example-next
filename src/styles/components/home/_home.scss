@@ -1,0 +1,37 @@
+.home {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+
+  &__collection {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 0 30px;
+    line-height: 1;
+
+    &__name {
+      --size: 40px;
+      font-size: calc(var(--optical-adjustment, 1) * var(--size));
+
+      @include minWidth(desktop) {
+        --size: 90px;
+      }
+    }
+
+    &__new {
+      vertical-align: top;
+      display: inline-block;
+      position: relative;
+      width: 0;
+      margin-left: 0.25em;
+
+      @include minWidth(desktop) {
+        top: calc(32px * var(--optical-adjustment, 1));
+      }
+    }
+
+    &__link {
+      @include resetLink();
+      color: var(--primary_text_color);
+    }
+  }
+}

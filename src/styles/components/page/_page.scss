@@ -1,0 +1,14 @@
+.page {
+  margin-top: 1em;
+
+  @include minWidth(desktop) {
+    display: grid;
+    grid-template-columns: 220px auto;
+    grid-gap: 30px;
+  }
+
+  &__body {
+    max-width: 40em;
+    grid-column: 2 / span 1;
+  }
+}
