@@ -43,7 +43,9 @@ export default async function Home() {
                 {node.name}
               </Link>
             </FontStyle>
-            {node.isNew && <span className="home__collection__new"> New</span>}
+            {node.isNew && (
+              <span className="home__collection__new">&nbsp;New</span>
+            )}
           </h2>
         );
       })}
