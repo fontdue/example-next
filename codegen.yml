@@ -1,4 +1,4 @@
-schema: https://tenant-9.fontdue.local/graphql
+schema: ${NEXT_PUBLIC_FONTDUE_URL}/graphql
 documents: './src/queries/*.graphql'
 generates:
   operations-types.ts:
