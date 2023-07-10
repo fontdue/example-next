@@ -67,7 +67,11 @@ export default async function RootLayout({
           }}
         />
 
-        <FontdueProvider config={{ typeTester: { selectable: true } }}>
+        <FontdueProvider
+          config={{
+            typeTester: { selectable: true, variableAxesPosition: "auto" },
+          }}
+        >
           <nav className="nav" data-border="true">
             <div className="nav__links">
               <div className="nav__item" data-label="home">
