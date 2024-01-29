@@ -1,17 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-/* @ts-ignore todo: update to swiper@10 to fix */
-import { Pagination, Autoplay } from "swiper";
-/* @ts-ignore */
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
-if (typeof window !== "undefined")
-  interface CarouselProps {
-    children: React.ReactNode[];
-  }
+interface CarouselProps {
+  children: React.ReactNode[];
+}
 
 export default function Carousel({ children }: CarouselProps) {
   const [loaded, setLoaded] = useState(false);
@@ -23,7 +20,6 @@ export default function Carousel({ children }: CarouselProps) {
   return (
     <div className="carousel" data-loaded={loaded}>
       <Swiper
-        /* @ts-ignore */
         modules={[Pagination, Autoplay]}
         autoplay
         loop
