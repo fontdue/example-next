@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import FontdueHTML from "@/components/FontdueHTML";
 import { fetchGraphql } from "@/lib/graphql";
 import { notEmpty } from "@/lib/utils";
@@ -41,11 +43,20 @@ export default async function Page(props: PageProps) {
 }
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  // Solves an issue with Next.js when these [slug]/page.js clash with named
+  // name/page.js routes
+  const dirs = (
+    await fs.readdir(path.resolve(__dirname, ".."), { withFileTypes: true })
+  )
+    .filter((dir) => dir.isDirectory())
+    .map((dir) => dir.name);
+
   const data = await fetchGraphql<PagePathsQuery>("PagePaths.graphql");
   const slugs =
     data.viewer.pages?.edges
       ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty) ?? [];
+      .filter(notEmpty)
+      .filter((slug) => !dirs.includes(slug)) ?? [];
 
   return slugs.map((slug) => ({ slug }));
 }
