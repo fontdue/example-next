@@ -133,6 +133,11 @@ export type ArticlePathsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ArticlePathsQuery = { viewer: { articles: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null } };
 
+export type ArticleTagsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArticleTagsQuery = { viewer: { articlesTags: Array<string> | null } };
+
 export type ArticlesQueryVariables = Exact<{
   tags: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
