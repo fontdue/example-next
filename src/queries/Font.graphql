@@ -4,16 +4,22 @@ fragment FontDetailCollection on FontCollection {
   collectionType
   isVariableFont
   cssUrl
-  sku { id }
+  sku {
+    id
+  }
   bundles {
-    sku { id }
+    sku {
+      id
+    }
   }
   fontStyles {
     name
     cssFamily
     cssWeight
     cssStyle
-    sku { id }
+    sku {
+      id
+    }
     variableInstances {
       name
       coordinates {
@@ -56,8 +62,7 @@ fragment FontDetail on FontCollection {
   minisiteLink
 }
 
-
-query Font ($slug: String!) {
+query Font($slug: String!) {
   viewer {
     slug(name: $slug) {
       fontCollection {
