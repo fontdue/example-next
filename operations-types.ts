@@ -16,6 +16,12 @@ export type Scalars = {
   Decimal: { input: any; output: any; }
 };
 
+export type AccessNodeInput = {
+  id: InputMaybe<Scalars['ID']['input']>;
+  password: Scalars['String']['input'];
+  slug: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ApplyCouponInput = {
   code: InputMaybe<Scalars['String']['input']>;
 };
