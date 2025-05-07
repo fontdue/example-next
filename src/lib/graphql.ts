@@ -7,7 +7,7 @@ const ENDPOINT = `${process.env.NEXT_PUBLIC_FONTDUE_URL}/graphql`;
 const getStaticQuery = async (queryName: string) => {
   let query = await fs.readFile(
     path.resolve(process.cwd(), "src", "queries", queryName),
-    "utf8"
+    "utf8",
   );
 
   return query;
@@ -15,7 +15,7 @@ const getStaticQuery = async (queryName: string) => {
 
 const fetchGraphql = async <Q, V = void>(
   queryName: string,
-  variables: V | void
+  variables: V | void,
 ): Promise<Q> => {
   const hash = crypto
     .createHash("md5")

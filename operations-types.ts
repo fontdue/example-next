@@ -36,6 +36,8 @@ export enum CollectionType {
 
 export type CreateOrderItemsInput = {
   licenseSelections: Array<InputMaybe<LicenseSelectionInput>>;
+  licenseeIsBillingIdentity: InputMaybe<Scalars['Boolean']['input']>;
+  orderVariableSelections: InputMaybe<Array<OrderVariableSelectionInput>>;
   skuIds: Array<InputMaybe<Scalars['ID']['input']>>;
 };
 
@@ -70,6 +72,7 @@ export type LicenseOptionsSpec = {
 };
 
 export type LicenseSelectionInput = {
+  id: InputMaybe<Scalars['ID']['input']>;
   licenseId: Scalars['ID']['input'];
   licenseOptionId: InputMaybe<Scalars['ID']['input']>;
   licenseVariableId: InputMaybe<Scalars['ID']['input']>;
@@ -101,6 +104,11 @@ export type OrderItemInput = {
   licenseSelections: Array<InputMaybe<LicenseSelectionInput>>;
 };
 
+export type OrderVariableSelectionInput = {
+  orderVariableId: Scalars['ID']['input'];
+  orderVariableOptionId: InputMaybe<Scalars['ID']['input']>;
+};
+
 export enum Separator {
   Comma = 'COMMA',
   Newline = 'NEWLINE',
@@ -123,8 +131,8 @@ export type UpdateOrderInput = {
   licenseeIdentity: InputMaybe<IdentityInput>;
   licenseeIsBillingIdentity: InputMaybe<Scalars['Boolean']['input']>;
   orderItems: InputMaybe<Array<InputMaybe<OrderItemInput>>>;
+  orderVariableSelections: InputMaybe<Array<OrderVariableSelectionInput>>;
   stripePaymentMethodId: InputMaybe<Scalars['String']['input']>;
-  stripeTokenId: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ArticleQueryVariables = Exact<{
@@ -151,16 +159,16 @@ export type ArticlesQueryVariables = Exact<{
 
 export type ArticlesQuery = { viewer: { articlesTags: Array<string> | null, articles: { edges: Array<{ node: { id: string, title: string | null, path: string | null, tags: Array<string> | null, slug: { name: string | null } | null, images: Array<{ url: string | null, description: string | null, meta: { width: number | null, height: number | null } | null }> | null } | null } | null> | null } | null } };
 
-export type FontDetailCollectionFragment = { id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null };
+export type FontDetailCollectionFragment = { id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> };
 
-export type FontDetailFragment = { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null };
+export type FontDetailFragment = { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> };
 
 export type FontQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type FontQuery = { viewer: { slug: { fontCollection: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pageMetadata: { title: string | null, description: string | null, keywords: string | null } | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null } | null } | null } };
+export type FontQuery = { viewer: { slug: { fontCollection: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pageMetadata: { title: string | null, description: string | null, keywords: string | null } | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> } | null } | null } };
 
 export type FontPathsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -172,7 +180,7 @@ export type FontCollectionCssFragment = { featureStyle: { cssFamily: string | nu
 export type IndexQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type IndexQuery = { viewer: { firstCollection: { edges: Array<{ node: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> | null } | null } | null> | null } | null, fontCollections: { edges: Array<{ node: { id: string, name: string, collectionType: string, url: string | null, isNew: boolean | null, opticalAdjustment: any | null, slug: { name: string | null } | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ format: string | null, url: string | null } | null> | null, family: { cssUrl: string | null } | null } | null } | null } | null> | null } | null } };
+export type IndexQuery = { viewer: { firstCollection: { edges: Array<{ node: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, family: { cssUrl: string | null } | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> } | null } | null> | null } | null, fontCollections: { edges: Array<{ node: { id: string, name: string, collectionType: string, url: string | null, isNew: boolean | null, opticalAdjustment: any | null, slug: { name: string | null } | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ format: string | null, url: string | null } | null> | null, family: { cssUrl: string | null } | null } | null } | null } | null> | null } | null } };
 
 export type LicenseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
