@@ -19,7 +19,7 @@ function styleFamilyName(
         name: string | null;
       }
     | null
-    | undefined
+    | undefined,
 ) {
   if (!style) return null;
   return `"${style.cssFamily} ${style.name}"`;
@@ -54,15 +54,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>{parse(viewer.settings?.faviconMarkup ?? "")}</head>
+      <head>{parse(viewer.settings?.faviconMarkup ?? "", { trim: true })}</head>
       <body>
-        {parse(viewer.settings?.htmlHead ?? "")}
+        {parse(viewer.settings?.htmlHead ?? "", { trim: true })}
         <PreloadWebfonts style={viewer.settings?.uiFontStyle} />
         <style
           type="text/css"
           dangerouslySetInnerHTML={{
             __html: `body { font-family: ${styleFamilyName(
-              viewer.settings?.uiFontStyle
+              viewer.settings?.uiFontStyle,
             )}, -apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif; }`,
           }}
         />
