@@ -10,23 +10,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import FontdueHTML from "@/components/FontdueHTML";
-import { constants } from "buffer";
 import { notEmpty } from "@/lib/utils";
+import { Metadata } from "next";
 
 interface ArticleProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-async function getData({ params: { slug } }: ArticleProps) {
+async function getData(slug: string) {
   return fetchGraphql<ArticleQuery, ArticleQueryVariables>("Article.graphql", {
     slug,
   });
 }
 
-export async function generateMetadata(props: ArticleProps) {
-  const data = await getData(props);
+export async function generateMetadata({
+  params,
+}: ArticleProps): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getData(slug);
   const article = data.viewer.slug?.article;
   if (!article) return {};
 
@@ -36,8 +39,9 @@ export async function generateMetadata(props: ArticleProps) {
   };
 }
 
-export default async function Article(props: ArticleProps) {
-  const data = await getData(props);
+export default async function Article({ params }: ArticleProps) {
+  const { slug } = await params;
+  const data = await getData(slug);
   const article = data.viewer.slug?.article;
   if (!article) notFound();
 

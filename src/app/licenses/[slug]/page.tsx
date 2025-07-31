@@ -8,19 +8,23 @@ import { fetchGraphql } from "@/lib/graphql";
 import { notEmpty } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import FontdueHTML from "@/components/FontdueHTML";
+import { Metadata } from "next";
 
 interface FontProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-async function getData({ params }: FontProps) {
+async function getData(slug: string) {
   return fetchGraphql<LicenseQuery, LicenseQueryVariables>("License.graphql", {
-    slug: params.slug,
+    slug,
   });
 }
 
-export async function generateMetadata(props: FontProps) {
-  const data = await getData(props);
+export async function generateMetadata({
+  params,
+}: FontProps): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getData(slug);
   const license = data.viewer.slug?.license;
   if (!license) return {};
   return {
@@ -28,8 +32,9 @@ export async function generateMetadata(props: FontProps) {
   };
 }
 
-export default async function Font(props: FontProps) {
-  const data = await getData(props);
+export default async function Font({ params }: FontProps) {
+  const { slug } = await params;
+  const data = await getData(slug);
 
   const license = data.viewer.slug?.license;
   if (!license) notFound();

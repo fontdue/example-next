@@ -9,10 +9,16 @@ export const metadata: Metadata = {
 };
 
 interface ArticlesProps {
-  params: { tag: string };
+  params: Promise<{ tag: string }>;
 }
 
-export default async function Articles({ params: { tag } }: ArticlesProps) {
+export default async function Articles(props: ArticlesProps) {
+  const params = await props.params;
+
+  const {
+    tag
+  } = params;
+
   return <ArticlesIndex tag={decodeURIComponent(tag)} />;
 }
 

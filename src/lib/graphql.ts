@@ -1,5 +1,4 @@
 import { promises as fs } from "fs";
-import crypto from "crypto";
 import path from "path";
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_FONTDUE_URL}/graphql`;
@@ -17,13 +16,8 @@ const fetchGraphql = async <Q, V = void>(
   queryName: string,
   variables: V | void,
 ): Promise<Q> => {
-  const hash = crypto
-    .createHash("md5")
-    .update(`${JSON.stringify(variables)}`)
-    .digest("hex")
-    .slice(0, 6);
   const query = await getStaticQuery(queryName);
-  const response = await fetch(`${ENDPOINT}?query=${queryName}&hash=${hash}`, {
+  const response = await fetch(`${ENDPOINT}?query=${queryName}`, {
     method: "POST",
     body: JSON.stringify({ query, variables }),
     headers: {

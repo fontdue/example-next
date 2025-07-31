@@ -5,23 +5,27 @@ import { fetchGraphql } from "@/lib/graphql";
 import { notEmpty } from "@/lib/utils";
 import { PagePathsQuery, PageQuery, PageQueryVariables } from "@graphql";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-async function getPage({ params }: PageProps) {
+async function getPage(slug: string) {
   const { viewer } = await fetchGraphql<PageQuery, PageQueryVariables>(
     "Page.graphql",
     {
-      slug: params.slug,
-    }
+      slug,
+    },
   );
   return viewer.slug?.page;
 }
 
-export async function generateMetadata(props: PageProps) {
-  const page = await getPage(props);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = await getPage(slug);
   if (!page) return {};
   return {
     ...page.pageMetadata,
@@ -29,8 +33,9 @@ export async function generateMetadata(props: PageProps) {
   };
 }
 
-export default async function Page(props: PageProps) {
-  const page = await getPage(props);
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
+  const page = await getPage(slug);
   if (!page) notFound();
 
   return (
