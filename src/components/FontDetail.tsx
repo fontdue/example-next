@@ -131,6 +131,7 @@ function CollectionStyles({ collection, isSubfamily }: CollectionStyles_props) {
                 key={i}
                 familyName={collection.name}
                 styleName={style.name}
+                webfontSources={style.webfontSources}
               >
                 {groups?.map((group, i) => (
                   <span key={i} className="collection-styles__group">
@@ -155,6 +156,7 @@ function CollectionStyles({ collection, isSubfamily }: CollectionStyles_props) {
                   key={j}
                   familyName={collection.name}
                   styleName={style.name}
+                  webfontSources={style.webfontSources}
                   className="collection-styles__style"
                 >
                   {style.name}{" "}
@@ -178,6 +180,7 @@ function FontDetail({ collection }: FontDetailProps) {
           <FontStyle
             familyName={collection.featureStyle?.cssFamily}
             styleName={collection.featureStyle?.name}
+            webfontSources={collection.featureStyle?.webfontSources}
           >
             <h1 className="collection-info__single-style-name">
               {collection.name}

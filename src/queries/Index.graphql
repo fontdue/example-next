@@ -13,6 +13,10 @@ fragment FontDetailCollection on FontCollection {
     cssFamily
     cssWeight
     cssStyle
+    webfontSources {
+      url
+      format
+    }
     sku { id }
     variableInstances {
       name
@@ -36,9 +40,9 @@ fragment FontDetail on FontCollection {
   featureStyle {
     cssFamily
     name
-
-    family {
-      cssUrl
+    webfontSources {
+      url
+      format
     }
   }
   children(collectionTypes: [FAMILY]) {

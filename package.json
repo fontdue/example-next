@@ -11,7 +11,7 @@
     "codegen": "DOTENV_CONFIG_PATH=.env.local graphql-codegen -r dotenv/config --watch"
   },
   "dependencies": {
-    "fontdue-js": "2.15.1",
+    "fontdue-js": "^2.20.0",
     "html-react-parser": "^5",
     "next": "15.4.4",
     "react": "19.1.1",

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { fetchGraphql } from "@/lib/graphql";
 import { IndexQuery } from "@graphql";
 import FontStyle from "@/components/FontStyle";
-import PreloadWebfonts from "@/components/PreloadWebfonts";
 import { notEmpty } from "@/lib/utils";
 import FontDetail from "@/components/FontDetail";
 
@@ -25,10 +24,10 @@ export default async function Home() {
 
         return (
           <h2 key={node.id} className="home__collection">
-            <PreloadWebfonts style={node.featureStyle} />
             <FontStyle
               familyName={node.featureStyle?.cssFamily}
               styleName={node.featureStyle?.name}
+              webfontSources={node.featureStyle?.webfontSources}
               className="home__collection__name"
             >
               <Link
