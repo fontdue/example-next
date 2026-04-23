@@ -176,24 +176,12 @@ function FontDetail({ collection }: FontDetailProps) {
   return (
     <>
       <div className={`collection-info ${collection.collectionType}`}>
-        {collection.fontStyles?.length === 1 ? (
-          <FontStyle
-            familyName={collection.featureStyle?.cssFamily}
-            styleName={collection.featureStyle?.name}
-            webfontSources={collection.featureStyle?.webfontSources}
-          >
-            <h1 className="collection-info__single-style-name">
-              {collection.name}
-            </h1>
-          </FontStyle>
-        ) : (
-          <div className="collection-info__name">
-            <h1>
-              {collection.name}
-              {collection.collectionType === "superfamily" && " Collection"}
-            </h1>
-          </div>
-        )}
+        <div className="collection-info__name">
+          <h1>
+            {collection.name}
+            {collection.collectionType === "superfamily" && " Collection"}
+          </h1>
+        </div>
 
         {collection.images?.length ? (
           <div className="collection-info__images">
