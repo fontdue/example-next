@@ -1,5 +1,6 @@
 query RootLayout {
   viewer {
+    url
     fontCollections(onlyRoots: true, first: 2) {
       edges {
         node {
@@ -20,6 +21,7 @@ query RootLayout {
     }
     settings {
       title
+      description
       footerText(format: HTML)
       htmlHead
       faviconMarkup

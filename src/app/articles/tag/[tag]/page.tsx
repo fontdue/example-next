@@ -4,12 +4,18 @@ import ArticlesIndex from "@/components/ArticlesIndex";
 import { ArticleTagsQuery } from "@graphql";
 import { notEmpty } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Articles",
-};
-
 interface ArticlesProps {
   params: Promise<{ tag: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ArticlesProps): Promise<Metadata> {
+  const { tag } = await params;
+  return {
+    title: "Articles",
+    alternates: { canonical: `/articles/tag/${tag}` },
+  };
 }
 
 export default async function Articles(props: ArticlesProps) {

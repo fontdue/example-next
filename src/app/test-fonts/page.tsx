@@ -6,6 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Test fonts",
+  alternates: { canonical: "/test-fonts" },
 };
 
 export default async function CustomerLoginPage() {

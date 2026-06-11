@@ -21,6 +21,10 @@ const nextConfig = {
       hmrRefreshes: true,
     },
   },
+  // Treat every user agent as HTML-limited so metadata rendering blocks the
+  // response. Streamed metadata locks in a 200 status before
+  // generateMetadata's notFound() can produce a real 404.
+  htmlLimitedBots: /.*/,
 };
 
 module.exports = nextConfig;

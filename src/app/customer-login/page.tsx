@@ -6,6 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Customer login",
+  alternates: { canonical: "/customer-login" },
 };
 
 export default async function CustomerLoginPage() {

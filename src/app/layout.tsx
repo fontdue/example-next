@@ -8,6 +8,7 @@ import Image from "next/image";
 import "../styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
+import { fallbackSiteUrl } from "@/lib/utils";
 import ActiveLink from "@/components/ActiveLink";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";
@@ -33,10 +34,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const { viewer } = await getData();
 
   return {
+    metadataBase: new URL(viewer.url ?? fallbackSiteUrl),
     title: {
       template: `%s | ${viewer.settings?.title}`,
       default: viewer.settings?.title ?? "",
     },
+    description: viewer.settings?.description,
   };
 }
 
@@ -54,9 +57,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <head>{parse(viewer.settings?.faviconMarkup ?? "", { trim: true })}</head>
-      <body>
+      <head>
+        {parse(viewer.settings?.faviconMarkup ?? "", { trim: true })}
         {parse(viewer.settings?.htmlHead ?? "", { trim: true })}
+      </head>
+      <body>
         <PreloadWebfonts style={viewer.settings?.uiFontStyle} />
         <style
           type="text/css"

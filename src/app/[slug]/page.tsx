@@ -26,10 +26,11 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPage(slug);
-  if (!page) return {};
+  if (!page) notFound();
   return {
     ...page.pageMetadata,
     title: page.pageMetadata?.title ?? page.title,
+    alternates: { canonical: `/${slug}` },
   };
 }
 

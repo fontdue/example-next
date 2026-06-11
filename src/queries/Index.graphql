@@ -76,6 +76,9 @@ fragment FontCollectionCSS on FontCollection {
 
 query Index {
   viewer {
+    settings {
+      title
+    }
     firstCollection: fontCollections(onlyRoots: true, first: 1) {
       edges {
         node {

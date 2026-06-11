@@ -31,11 +31,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getData(slug);
   const article = data.viewer.slug?.article;
-  if (!article) return {};
+  if (!article) notFound();
 
   return {
     ...article.pageMetadata,
     title: article.pageMetadata?.title ?? article.title,
+    alternates: { canonical: `/article/${slug}` },
   };
 }
 

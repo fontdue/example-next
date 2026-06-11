@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { Metadata } from "next";
 import { fetchGraphql } from "@/lib/graphql";
 import { IndexQuery } from "@graphql";
 import FontStyle from "@/components/FontStyle";
 import { notEmpty } from "@/lib/utils";
 import FontDetail from "@/components/FontDetail";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default async function Home() {
   const data = await fetchGraphql<IndexQuery>("Index.graphql");
@@ -19,6 +24,7 @@ export default async function Home() {
 
   return (
     <section className="home">
+      <h1 className="visually-hidden">{data.viewer.settings?.title}</h1>
       {collections?.map((node) => {
         if (!node.slug) return;
 

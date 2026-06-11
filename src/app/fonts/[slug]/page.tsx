@@ -22,11 +22,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const { viewer } = await getData(slug);
   const font = viewer.slug?.fontCollection;
-  if (!font) return {};
+  if (!font) notFound();
 
   return {
     ...font.pageMetadata,
     title: font.pageMetadata?.title ?? font.name,
+    alternates: { canonical: `/fonts/${slug}` },
   };
 }
 
