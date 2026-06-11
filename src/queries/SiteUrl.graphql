@@ -1,0 +1,5 @@
+query SiteUrl {
+  viewer {
+    url
+  }
+}

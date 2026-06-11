@@ -8,6 +8,10 @@ Add a `.env.local` file with your Fontdue URL:
 NEXT_PUBLIC_FONTDUE_URL=https://example.fontdue.com
 ```
 
+The sitemap, robots.txt, and canonical URLs are built from the site URL
+configured in your Fontdue admin panel (Settings -> Website settings), so make
+sure it matches your production domain exactly.
+
 Then start the development server:
 
 ```bash

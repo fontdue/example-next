@@ -1,5 +1,6 @@
 query Sitemap {
   viewer {
+    url
     fontCollections(onlyRoots: true, first: 999) {
       edges {
         node {
@@ -26,6 +27,7 @@ query Sitemap {
 
     licenses {
       slug { name }
+      pdf { url }
     }
   }
 }
