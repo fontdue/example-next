@@ -5,6 +5,9 @@ query License($slug: String!) {
         id
         name
         text(format: HTML)
+        pdf {
+          url
+        }
       }
     }
   }

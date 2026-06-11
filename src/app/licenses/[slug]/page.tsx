@@ -6,7 +6,7 @@ import {
 } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
 import { notEmpty } from "@/lib/utils";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import FontdueHTML from "@/components/FontdueHTML";
 import { Metadata } from "next";
 
@@ -26,23 +26,30 @@ export async function generateMetadata({
   const { slug } = await params;
   const data = await getData(slug);
   const license = data.viewer.slug?.license;
-  if (!license) return {};
+  if (!license) notFound();
   return {
     title: `${license.name} license`,
+    alternates: { canonical: `/licenses/${slug}` },
   };
 }
 
-export default async function Font({ params }: FontProps) {
+export default async function License({ params }: FontProps) {
   const { slug } = await params;
   const data = await getData(slug);
 
   const license = data.viewer.slug?.license;
   if (!license) notFound();
 
+  // Licenses with an uploaded PDF are served as the PDF itself; the license
+  // text only backs licenses without one.
+  if (license.pdf?.url) redirect(license.pdf.url);
+
   return (
-    <article className="markdown">
-      <FontdueHTML html={license.text} />
-    </article>
+    <main className="page">
+      <article className="markdown page__body">
+        <FontdueHTML html={license.text} />
+      </article>
+    </main>
   );
 }
 

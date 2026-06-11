@@ -4,6 +4,10 @@ query Licenses {
       id
       name
       slug { name }
+      pdf {
+        url
+        thumbnailUrl
+      }
     }
   }
 }

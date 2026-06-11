@@ -37,6 +37,8 @@ export enum CollectionType {
 export type CreateLibraryStripeCheckoutSessionInput = {
   /** Which Stripe subscription billing period? "month" or "year". Only used when creating a new subscription. */
   billingPeriod: InputMaybe<Scalars['String']['input']>;
+  /** Optional customer-entered promotion code. When creating a new subscription, the code is applied to the Stripe Checkout session. For resume/add-payment-method flows (trialing/paused/past_due), the code is attached to the existing subscription so the first post-resume invoice reflects the discount. */
+  promotionCode: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateOrderItemsInput = {
@@ -135,6 +137,8 @@ export enum Separator {
 export type StartLibraryStripeSubscriptionTrialInput = {
   /** Which Stripe subscription billing period? "month" or "year" */
   billingPeriod: InputMaybe<Scalars['String']['input']>;
+  /** Optional customer-entered promotion code. Validated via Stripe and, if valid, applied to the trial subscription so the first invoice after trial end reflects the discount. */
+  promotionCode: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum TextFormat {
@@ -156,6 +160,10 @@ export type UpdateOrderInput = {
   orderItems: InputMaybe<Array<InputMaybe<OrderItemInput>>>;
   orderVariableSelections: InputMaybe<Array<OrderVariableSelectionInput>>;
   stripePaymentMethodId: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateWebfontDomainsInput = {
+  hosts: Array<Scalars['String']['input']>;
 };
 
 export type ArticleQueryVariables = Exact<{
@@ -203,14 +211,14 @@ export type FontCollectionCssFragment = { featureStyle: { cssFamily: string | nu
 export type IndexQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type IndexQuery = { viewer: { firstCollection: { edges: Array<{ node: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ url: string | null, format: string | null } | null> | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> } | null } | null> | null } | null, fontCollections: { edges: Array<{ node: { id: string, name: string, collectionType: string, url: string | null, isNew: boolean | null, opticalAdjustment: any | null, slug: { name: string | null } | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ format: string | null, url: string | null } | null> | null, family: { cssUrl: string | null } | null } | null } | null } | null> | null } | null } };
+export type IndexQuery = { viewer: { settings: { title: string | null } | null, firstCollection: { edges: Array<{ node: { shortDescription: string | null, description: string | null, minisiteLink: string | null, id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, pdfs: Array<{ url: string | null, thumbnailUrl: string | null, name: string | null } | null> | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ url: string | null, format: string | null } | null> | null } | null, children: Array<{ id: string, name: string, collectionType: string, isVariableFont: boolean, cssUrl: string | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> }> | null, images: Array<{ url: string | null, description: string | null, meta: { mimeType: string | null, width: number | null, height: number | null } | null }> | null, sku: { id: string } | null, bundles: Array<{ sku: { id: string } | null }> | null, fontStyles: Array<{ name: string, cssFamily: string | null, cssWeight: string | null, cssStyle: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null, sku: { id: string } | null, variableInstances: Array<{ name: string, coordinates: Array<{ axis: string, value: number }> }> | null }> } | null } | null> | null } | null, fontCollections: { edges: Array<{ node: { id: string, name: string, collectionType: string, url: string | null, isNew: boolean | null, opticalAdjustment: any | null, slug: { name: string | null } | null, featureStyle: { cssFamily: string | null, name: string, webfontSources: Array<{ format: string | null, url: string | null } | null> | null, family: { cssUrl: string | null } | null } | null } | null } | null> | null } | null } };
 
 export type LicenseQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type LicenseQuery = { viewer: { slug: { license: { id: string, name: string | null, text: string | null } | null } | null } };
+export type LicenseQuery = { viewer: { slug: { license: { id: string, name: string | null, text: string | null, pdf: { url: string | null } | null } | null } | null } };
 
 export type LicensePathsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -220,7 +228,7 @@ export type LicensePathsQuery = { viewer: { licenses: Array<{ slug: { name: stri
 export type LicensesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LicensesQuery = { viewer: { licenses: Array<{ id: string, name: string | null, slug: { name: string | null } | null }> | null } };
+export type LicensesQuery = { viewer: { licenses: Array<{ id: string, name: string | null, slug: { name: string | null } | null, pdf: { url: string | null, thumbnailUrl: string | null } | null }> | null } };
 
 export type PageQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -237,9 +245,14 @@ export type PagePathsQuery = { viewer: { pages: { edges: Array<{ node: { slug: {
 export type RootLayoutQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RootLayoutQuery = { viewer: { fontCollections: { edges: Array<{ node: { id: string } | null } | null> | null } | null, pages: { edges: Array<{ node: { id: string, title: string | null, slug: { name: string | null } | null } | null } | null> | null } | null, settings: { title: string | null, footerText: string | null, htmlHead: string | null, faviconMarkup: string | null, uiFontStyle: { name: string, cssFamily: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null } | null } | null, logo: { url: string, meta: { width: number | null, height: number | null } } | null } };
+export type RootLayoutQuery = { viewer: { url: string, fontCollections: { edges: Array<{ node: { id: string } | null } | null> | null } | null, pages: { edges: Array<{ node: { id: string, title: string | null, slug: { name: string | null } | null } | null } | null> | null } | null, settings: { title: string | null, description: string | null, footerText: string | null, htmlHead: string | null, faviconMarkup: string | null, uiFontStyle: { name: string, cssFamily: string | null, webfontSources: Array<{ url: string | null, format: string | null } | null> | null } | null } | null, logo: { url: string, meta: { width: number | null, height: number | null } } | null } };
+
+export type SiteUrlQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SiteUrlQuery = { viewer: { url: string } };
 
 export type SitemapQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SitemapQuery = { viewer: { fontCollections: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, articles: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, pages: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, licenses: Array<{ slug: { name: string | null } | null }> | null } };
+export type SitemapQuery = { viewer: { url: string, fontCollections: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, articles: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, pages: { edges: Array<{ node: { slug: { name: string | null } | null } | null } | null> | null } | null, licenses: Array<{ slug: { name: string | null } | null, pdf: { url: string | null } | null }> | null } };

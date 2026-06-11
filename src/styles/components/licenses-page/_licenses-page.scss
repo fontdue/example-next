@@ -1,35 +1,37 @@
 .licenses-page {
-  @include minWidth(desktop) {
-    display: grid;
-    grid-template-columns: 220px auto;
-    grid-template-rows: max-content;
-    grid-column-gap: 30px;
-  }
-
-  &__title {
-    margin-top: 1em;
-    margin-bottom: 1.5em;
-  }
-
-  &__text {
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
     grid-column: 2 / span 1;
-    grid-row: 1 / span 2;
-    margin-top: 1em;
     max-width: 40em;
-  }
-
-  &__licenses {
-    grid-column: 1 / span 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 30px;
   }
 
   &__license {
     &__link {
       @include resetLink();
-      color: var(--link_color);
+      display: block;
+      color: inherit;
 
-      &.active {
-        color: var(--active_link_color);
+      &:hover {
+        color: var(--link_hover_color);
       }
+    }
+
+    &__thumbnail {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1275 / 1650;
+      border: 1px solid var(--horizontal_rule_color);
+    }
+
+    &__name {
+      display: block;
+      margin-top: 0.75em;
     }
   }
 }
