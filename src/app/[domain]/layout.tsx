@@ -8,7 +8,7 @@ import Image from "next/image";
 import "../../styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { fallbackSiteUrl, isMultiTenant } from "@/lib/tenant";
+import { fallbackSiteUrl } from "@/lib/tenant";
 import ActiveLink from "@/components/ActiveLink";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";
@@ -92,11 +92,13 @@ export default async function RootLayout({ children, params }: LayoutProps) {
         />
 
         <FontdueProvider
-          // In multi-tenant mode the browser runs on the tenant's own domain,
-          // so client-side fontdue-js requests go to that origin instead of
-          // the build-time NEXT_PUBLIC_FONTDUE_URL. (Server-side fontdue-js
-          // preloads still use the env var until the v3 per-request URL work.)
-          url={isMultiTenant ? `https://${domain}` : undefined}
+          // No url/serverConfig needed: fontdue-js's server-side fetches use
+          // the per-render config that fetchGraphql has already set (it runs
+          // before anything renders, on every page), and the browser falls
+          // back to the page's own origin in multi-tenant mode or
+          // NEXT_PUBLIC_FONTDUE_URL in single-tenant forks. Passing it as a
+          // prop would also expose the internal proxy headers in dev-mode
+          // RSC debug payloads.
           config={{
             typeTester: { selectable: true, variableAxesPosition: "auto" },
           }}

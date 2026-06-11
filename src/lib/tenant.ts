@@ -18,12 +18,13 @@
 // fetching the tenant's public URL directly, which is useful for local
 // development against live sites.
 //
-// NOTE (fontdue-js v2 interim): the fontdue-js components embedded in pages
-// still resolve their own GraphQL URL from NEXT_PUBLIC_FONTDUE_URL on the
-// server, so in multi-tenant mode their server-side preloads are not yet
-// per-tenant. That's addressed by the fontdue-js v3 per-request URL work
-// (FD-702 workstream 2); until then NEXT_PUBLIC_FONTDUE_URL must still be set
-// in multi-tenant deployments to keep fontdue-js's SSR happy.
+// The fontdue-js components embedded in pages fetch the same way: their
+// server-side preloads read the per-render config set in fetchGraphql (see
+// fontdueServerConfig below), and in the browser they fetch the relative
+// /graphql on the page's own origin — so multi-tenant mode needs no
+// NEXT_PUBLIC_FONTDUE_URL at all.
+
+import type { FontdueServerConfig } from "fontdue-js/server";
 
 export const isMultiTenant = process.env.FONTDUE_MULTI_TENANT === "1";
 
@@ -69,4 +70,13 @@ export function fontdueEndpoint(domain: string): {
 // metadataBase / sitemap fallback when the site URL setting is empty.
 export function fallbackSiteUrl(domain: string): string {
   return isMultiTenant ? `https://${domain}` : "http://localhost:3000";
+}
+
+// Per-render config for fontdue-js's own server-side fetches: same endpoint
+// and headers as fetchGraphql, plus the per-domain cache tag so
+// /api/revalidate purges embed data (theme config, type testers, store)
+// along with the pages.
+export function fontdueServerConfig(domain: string): FontdueServerConfig {
+  const { origin, headers } = fontdueEndpoint(domain);
+  return { url: origin, headers, cacheTags: [`graphql:${domain}`] };
 }

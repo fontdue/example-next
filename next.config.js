@@ -82,6 +82,10 @@ const nextConfig = {
     };
   },
   images: {
+    // In multi-tenant dev the optimizer runs inside a container where tenant
+    // hostnames resolve to the host machine's loopback, so it can't fetch
+    // the originals — serve them unoptimized there.
+    unoptimized: isMultiTenant && process.env.NODE_ENV !== "production",
     dangerouslyAllowSVG: true,
     remotePatterns: [
       ...(fontdueUrl

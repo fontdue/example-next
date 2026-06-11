@@ -1,7 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { notFound } from "next/navigation";
-import { fontdueEndpoint, isValidDomain } from "./tenant";
+import { setFontdueServerConfig } from "fontdue-js/server";
+import { fontdueEndpoint, fontdueServerConfig, isValidDomain } from "./tenant";
 
 const getStaticQuery = async (queryName: string) => {
   let query = await fs.readFile(
@@ -25,6 +26,12 @@ const fetchGraphql = async <Q, V = void>(
   if (!isValidDomain(domain)) {
     notFound();
   }
+
+  // Configure fontdue-js's server-side fetches for this render. Every page
+  // (and the layout) calls fetchGraphql before rendering any Fontdue
+  // component, and the config store is per render pass — setting it here
+  // also covers soft navigations, where the layout doesn't re-render.
+  setFontdueServerConfig(fontdueServerConfig(domain));
 
   const query = await getStaticQuery(queryName);
   const { origin, headers } = fontdueEndpoint(domain);
