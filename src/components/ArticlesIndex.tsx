@@ -5,13 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface ArticlesIndexProps {
+  domain: string;
   tag?: string | null | undefined;
 }
 
 export default async function ArticlesIndex({
+  domain,
   tag: tagParam,
 }: ArticlesIndexProps) {
   const data = await fetchGraphql<ArticlesQuery, ArticlesQueryVariables>(
+    domain,
     "Articles.graphql",
     {
       tags: tagParam ? [tagParam] : null,

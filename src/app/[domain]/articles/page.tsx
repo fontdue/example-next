@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/articles" },
 };
 
-export default async function Articles() {
-  return <ArticlesIndex />;
+export default async function Articles({
+  params,
+}: {
+  params: Promise<{ domain: string }>;
+}) {
+  const { domain } = await params;
+  return <ArticlesIndex domain={domain} />;
 }

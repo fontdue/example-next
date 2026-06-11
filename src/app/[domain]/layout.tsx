@@ -5,10 +5,10 @@ import parse from "html-react-parser";
 import { Metadata } from "next";
 import "fontdue-js/fontdue.css";
 import Image from "next/image";
-import "../styles/main.scss";
+import "../../styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { fallbackSiteUrl } from "@/lib/utils";
+import { fallbackSiteUrl, isMultiTenant } from "@/lib/tenant";
 import ActiveLink from "@/components/ActiveLink";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";
@@ -26,15 +26,37 @@ function styleFamilyName(
   return `"${style.cssFamily} ${style.name}"`;
 }
 
-async function getData() {
-  return fetchGraphql<RootLayoutQuery>("RootLayout.graphql");
+interface LayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ domain: string }>;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { viewer } = await getData();
+// No domains are prerendered at build time (they aren't known then), but
+// providing generateStaticParams opts every route under [domain] into
+// static-on-demand rendering: each tenant page is generated on first request
+// and cached until /api/revalidate purges it.
+export async function generateStaticParams(): Promise<{ domain: string }[]> {
+  return [];
+}
+
+// fontdue-js's internal server-side preloads call fetch without a cache
+// option, which Next 15 treats as no-store and would downgrade every
+// on-demand render to fully dynamic (no page caching). Default them to
+// cached; they carry the "graphql" tag so revalidation still purges them.
+export const fetchCache = "default-cache";
+
+async function getData(domain: string) {
+  return fetchGraphql<RootLayoutQuery>(domain, "RootLayout.graphql");
+}
+
+export async function generateMetadata({
+  params,
+}: Omit<LayoutProps, "children">): Promise<Metadata> {
+  const { domain } = await params;
+  const { viewer } = await getData(domain);
 
   return {
-    metadataBase: new URL(viewer.url ?? fallbackSiteUrl),
+    metadataBase: new URL(viewer.url ?? fallbackSiteUrl(domain)),
     title: {
       template: `%s | ${viewer.settings?.title}`,
       default: viewer.settings?.title ?? "",
@@ -43,12 +65,9 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { viewer } = await getData();
+export default async function RootLayout({ children, params }: LayoutProps) {
+  const { domain } = await params;
+  const { viewer } = await getData(domain);
 
   const pages = viewer.pages?.edges?.map((edge) => edge!.node!);
 
@@ -73,6 +92,11 @@ export default async function RootLayout({
         />
 
         <FontdueProvider
+          // In multi-tenant mode the browser runs on the tenant's own domain,
+          // so client-side fontdue-js requests go to that origin instead of
+          // the build-time NEXT_PUBLIC_FONTDUE_URL. (Server-side fontdue-js
+          // preloads still use the env var until the v3 per-request URL work.)
+          url={isMultiTenant ? `https://${domain}` : undefined}
           config={{
             typeTester: { selectable: true, variableAxesPosition: "auto" },
           }}

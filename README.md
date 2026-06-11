@@ -12,6 +12,11 @@ The sitemap, robots.txt, and canonical URLs are built from the site URL
 configured in your Fontdue admin panel (Settings -> Website settings), so make
 sure it matches your production domain exactly.
 
+This repo is also the template Fontdue itself uses to serve hosted sites, so
+you're customizing the same code that runs them. That's why pages live under
+the `src/app/[domain]/` segment — with `NEXT_PUBLIC_FONTDUE_URL` set, the
+domain is constant and you can ignore it.
+
 Then start the development server:
 
 ```bash

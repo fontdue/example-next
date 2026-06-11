@@ -1,7 +1,0 @@
-query LicensePaths {
-  viewer {
-    licenses {
-      slug { name }
-    }
-  }
-}

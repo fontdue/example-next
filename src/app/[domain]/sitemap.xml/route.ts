@@ -1,14 +1,24 @@
-import { MetadataRoute } from "next";
 import { fetchGraphql } from "@/lib/graphql";
 import { SitemapQuery } from "@graphql";
-import { notEmpty, fallbackSiteUrl } from "@/lib/utils";
+import { notEmpty } from "@/lib/utils";
+import { fallbackSiteUrl } from "@/lib/tenant";
 
 // Utility pages (login, font trials) are intentionally left out — they're
 // reachable from the nav but aren't search-relevant content.
 const EXCLUDED_PAGE_SLUGS = new Set(["customer-login", "test-fonts"]);
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { viewer } = await fetchGraphql<SitemapQuery>("Sitemap.graphql");
+// Served at /sitemap.xml via the host → /[domain] middleware rewrite. A route
+// handler rather than the app/sitemap.ts convention because that convention
+// only works at the app root, where the tenant isn't known.
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ domain: string }> },
+) {
+  const { domain } = await params;
+  const { viewer } = await fetchGraphql<SitemapQuery>(
+    domain,
+    "Sitemap.graphql",
+  );
 
   const fonts =
     viewer.fontCollections?.edges
@@ -44,7 +54,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...licenses.map((slug) => `/licenses/${slug}`),
   ]);
 
-  return Array.from(paths).map((path) => ({
-    url: new URL(path, viewer.url ?? fallbackSiteUrl).toString(),
-  }));
+  const base = viewer.url ?? fallbackSiteUrl(domain);
+  const urls = Array.from(paths)
+    .map((path) => `  <url><loc>${escapeXml(new URL(path, base).toString())}</loc></url>`)
+    .join("\n");
+
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`;
+
+  return new Response(body, {
+    headers: { "content-type": "application/xml" },
+  });
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }

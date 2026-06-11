@@ -10,12 +10,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/licenses" },
 };
 
-export default async function LicensesPage() {
+export default async function LicensesPage({
+  params,
+}: {
+  params: Promise<{ domain: string }>;
+}) {
+  const { domain } = await params;
   const [pageData, licensesData] = await Promise.all([
-    fetchGraphql<PageQuery, PageQueryVariables>("Page.graphql", {
+    fetchGraphql<PageQuery, PageQueryVariables>(domain, "Page.graphql", {
       slug: "licenses",
     }),
-    fetchGraphql<LicensesQuery>("Licenses.graphql"),
+    fetchGraphql<LicensesQuery>(domain, "Licenses.graphql"),
   ]);
 
   const page = pageData.viewer.slug?.page;

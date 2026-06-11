@@ -1,11 +1,8 @@
 import { Metadata } from "next";
-import { fetchGraphql } from "@/lib/graphql";
 import ArticlesIndex from "@/components/ArticlesIndex";
-import { ArticleTagsQuery } from "@graphql";
-import { notEmpty } from "@/lib/utils";
 
 interface ArticlesProps {
-  params: Promise<{ tag: string }>;
+  params: Promise<{ domain: string; tag: string }>;
 }
 
 export async function generateMetadata({
@@ -19,19 +16,13 @@ export async function generateMetadata({
 }
 
 export default async function Articles(props: ArticlesProps) {
-  const params = await props.params;
+  const { domain, tag } = await props.params;
 
-  const {
-    tag
-  } = params;
-
-  return <ArticlesIndex tag={decodeURIComponent(tag)} />;
+  return <ArticlesIndex domain={domain} tag={decodeURIComponent(tag)} />;
 }
 
+// Nothing prerendered at build time; opts the route into static-on-demand
+// rendering (see [domain]/layout.tsx).
 export async function generateStaticParams(): Promise<{ tag: string }[]> {
-  const data = await fetchGraphql<ArticleTagsQuery>("ArticleTags.graphql");
-
-  return (
-    data.viewer.articlesTags?.filter(notEmpty).map((tag) => ({ tag })) ?? []
-  );
+  return [];
 }

@@ -1,18 +1,16 @@
-import fs from "fs/promises";
-import path from "path";
 import FontdueHTML from "@/components/FontdueHTML";
 import { fetchGraphql } from "@/lib/graphql";
-import { notEmpty } from "@/lib/utils";
-import { PagePathsQuery, PageQuery, PageQueryVariables } from "@graphql";
+import { PageQuery, PageQueryVariables } from "@graphql";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ domain: string; slug: string }>;
 }
 
-async function getPage(slug: string) {
+async function getPage(domain: string, slug: string) {
   const { viewer } = await fetchGraphql<PageQuery, PageQueryVariables>(
+    domain,
     "Page.graphql",
     {
       slug,
@@ -24,8 +22,8 @@ async function getPage(slug: string) {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const page = await getPage(slug);
+  const { domain, slug } = await params;
+  const page = await getPage(domain, slug);
   if (!page) notFound();
   return {
     ...page.pageMetadata,
@@ -35,8 +33,8 @@ export async function generateMetadata({
 }
 
 export default async function Page({ params }: PageProps) {
-  const { slug } = await params;
-  const page = await getPage(slug);
+  const { domain, slug } = await params;
+  const page = await getPage(domain, slug);
   if (!page) notFound();
 
   return (
@@ -48,21 +46,8 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
+// Nothing prerendered at build time; opts the route into static-on-demand
+// rendering (see [domain]/layout.tsx).
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  // Solves an issue with Next.js when these [slug]/page.js clash with named
-  // name/page.js routes
-  const dirs = (
-    await fs.readdir(path.resolve(__dirname, ".."), { withFileTypes: true })
-  )
-    .filter((dir) => dir.isDirectory())
-    .map((dir) => dir.name);
-
-  const data = await fetchGraphql<PagePathsQuery>("PagePaths.graphql");
-  const slugs =
-    data.viewer.pages?.edges
-      ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty)
-      .filter((slug) => !dirs.includes(slug)) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
+  return [];
 }

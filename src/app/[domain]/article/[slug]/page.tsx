@@ -1,35 +1,35 @@
 import Carousel from "@/components/Carousel";
 import { fetchGraphql } from "@/lib/graphql";
-import {
-  ArticlePathsQuery,
-  ArticleQuery,
-  ArticleQueryVariables,
-} from "@graphql";
+import { ArticleQuery, ArticleQueryVariables } from "@graphql";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import FontdueHTML from "@/components/FontdueHTML";
-import { notEmpty } from "@/lib/utils";
 import { Metadata } from "next";
 
 interface ArticleProps {
   params: Promise<{
+    domain: string;
     slug: string;
   }>;
 }
 
-async function getData(slug: string) {
-  return fetchGraphql<ArticleQuery, ArticleQueryVariables>("Article.graphql", {
-    slug,
-  });
+async function getData(domain: string, slug: string) {
+  return fetchGraphql<ArticleQuery, ArticleQueryVariables>(
+    domain,
+    "Article.graphql",
+    {
+      slug,
+    },
+  );
 }
 
 export async function generateMetadata({
   params,
 }: ArticleProps): Promise<Metadata> {
-  const { slug } = await params;
-  const data = await getData(slug);
+  const { domain, slug } = await params;
+  const data = await getData(domain, slug);
   const article = data.viewer.slug?.article;
   if (!article) notFound();
 
@@ -41,8 +41,8 @@ export async function generateMetadata({
 }
 
 export default async function Article({ params }: ArticleProps) {
-  const { slug } = await params;
-  const data = await getData(slug);
+  const { domain, slug } = await params;
+  const data = await getData(domain, slug);
   const article = data.viewer.slug?.article;
   if (!article) notFound();
 
@@ -89,12 +89,8 @@ export default async function Article({ params }: ArticleProps) {
   );
 }
 
+// Nothing prerendered at build time; opts the route into static-on-demand
+// rendering (see [domain]/layout.tsx).
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const data = await fetchGraphql<ArticlePathsQuery>("ArticlePaths.graphql");
-  const slugs =
-    data.viewer.articles?.edges
-      ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
+  return [];
 }

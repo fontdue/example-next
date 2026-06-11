@@ -9,10 +9,16 @@ export const metadata: Metadata = {
   alternates: { canonical: "/customer-login" },
 };
 
-export default async function CustomerLoginPage() {
+export default async function CustomerLoginPage({
+  params,
+}: {
+  params: Promise<{ domain: string }>;
+}) {
+  const { domain } = await params;
   const data = await fetchGraphql<PageQuery, PageQueryVariables>(
+    domain,
     "Page.graphql",
-    { slug: "customer-login" }
+    { slug: "customer-login" },
   );
 
   const page = data.viewer.slug?.page;

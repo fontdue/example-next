@@ -10,8 +10,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default async function Home() {
-  const data = await fetchGraphql<IndexQuery>("Index.graphql");
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ domain: string }>;
+}) {
+  const { domain } = await params;
+  const data = await fetchGraphql<IndexQuery>(domain, "Index.graphql");
 
   const collections = data.viewer.fontCollections?.edges
     ?.map((edge) => edge?.node)

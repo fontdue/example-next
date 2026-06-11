@@ -1,5 +1,0 @@
-query ArticleTags {
-  viewer {
-    articlesTags
-  }
-}
