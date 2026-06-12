@@ -9,10 +9,10 @@ export const metadata: Metadata = {
   alternates: { canonical: "/test-fonts" },
 };
 
-export default async function CustomerLoginPage() {
+export default async function TestFontsPage() {
   const data = await fetchGraphql<PageQuery, PageQueryVariables>(
     "Page.graphql",
-    { slug: "test-fonts" }
+    { slug: "test-fonts" },
   );
 
   const page = data.viewer.slug?.page;

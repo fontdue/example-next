@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function CustomerLoginPage() {
   const data = await fetchGraphql<PageQuery, PageQueryVariables>(
     "Page.graphql",
-    { slug: "customer-login" }
+    { slug: "customer-login" },
   );
 
   const page = data.viewer.slug?.page;

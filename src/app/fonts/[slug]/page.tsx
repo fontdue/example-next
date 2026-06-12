@@ -1,7 +1,6 @@
 import React from "react";
-import { FontPathsQuery, FontQuery, FontQueryVariables } from "@graphql";
+import { FontQuery, FontQueryVariables } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { notEmpty } from "@/lib/utils";
 import FontDetail from "@/components/FontDetail";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
@@ -16,10 +15,8 @@ async function getData(slug: string) {
   });
 }
 
-export async function generateMetadata({
-  params,
-}: FontProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(props: FontProps): Promise<Metadata> {
+  const { slug } = await props.params;
   const { viewer } = await getData(slug);
   const font = viewer.slug?.fontCollection;
   if (!font) notFound();
@@ -31,8 +28,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function Font({ params }: FontProps) {
-  const { slug } = await params;
+export default async function Font(props: FontProps) {
+  const { slug } = await props.params;
   const data = await getData(slug);
   const collection = data.viewer.slug?.fontCollection;
   if (!collection) notFound();
@@ -40,12 +37,4 @@ export default async function Font({ params }: FontProps) {
   return <FontDetail collection={collection} />;
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const data = await fetchGraphql<FontPathsQuery>("FontPaths.graphql");
-  const slugs =
-    data.viewer.fontCollections?.edges
-      ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
-}
+export { fontParams as generateStaticParams } from "@/lib/static-params";

@@ -1,22 +1,15 @@
 import Carousel from "@/components/Carousel";
 import { fetchGraphql } from "@/lib/graphql";
-import {
-  ArticlePathsQuery,
-  ArticleQuery,
-  ArticleQueryVariables,
-} from "@graphql";
+import { ArticleQuery, ArticleQueryVariables } from "@graphql";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import FontdueHTML from "@/components/FontdueHTML";
-import { notEmpty } from "@/lib/utils";
 import { Metadata } from "next";
 
 interface ArticleProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }
 
 async function getData(slug: string) {
@@ -25,10 +18,8 @@ async function getData(slug: string) {
   });
 }
 
-export async function generateMetadata({
-  params,
-}: ArticleProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(props: ArticleProps): Promise<Metadata> {
+  const { slug } = await props.params;
   const data = await getData(slug);
   const article = data.viewer.slug?.article;
   if (!article) notFound();
@@ -40,8 +31,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function Article({ params }: ArticleProps) {
-  const { slug } = await params;
+export default async function Article(props: ArticleProps) {
+  const { slug } = await props.params;
   const data = await getData(slug);
   const article = data.viewer.slug?.article;
   if (!article) notFound();
@@ -89,12 +80,4 @@ export default async function Article({ params }: ArticleProps) {
   );
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const data = await fetchGraphql<ArticlePathsQuery>("ArticlePaths.graphql");
-  const slugs =
-    data.viewer.articles?.edges
-      ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
-}
+export { articleParams as generateStaticParams } from "@/lib/static-params";

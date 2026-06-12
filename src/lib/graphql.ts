@@ -1,7 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
-
-const ENDPOINT = `${process.env.NEXT_PUBLIC_FONTDUE_URL}/graphql`;
+import { notFound } from "next/navigation";
+import type { FontdueEndpoint } from "fontdue-js/next";
+import { currentFontdueEndpoint } from "fontdue-js/next";
 
 const getStaticQuery = async (queryName: string) => {
   let query = await fs.readFile(
@@ -14,19 +15,32 @@ const getStaticQuery = async (queryName: string) => {
 
 const fetchGraphql = async <Q, V = void>(
   queryName: string,
-  variables: V | void,
+  variables?: V | void,
+  // Defaults to the NEXT_PUBLIC_FONTDUE_URL site.
+  endpoint: FontdueEndpoint = currentFontdueEndpoint(),
 ): Promise<Q> => {
   const query = await getStaticQuery(queryName);
-  const response = await fetch(`${ENDPOINT}?query=${queryName}`, {
-    method: "POST",
-    body: JSON.stringify({ query, variables }),
-    headers: {
-      "content-type": "application/json",
+  const response = await fetch(
+    `${endpoint.origin}/graphql?query=${queryName}`,
+    {
+      method: "POST",
+      body: JSON.stringify({ query, variables }),
+      headers: {
+        "content-type": "application/json",
+        ...endpoint.headers,
+      },
+      // Cached explicitly (Next 15 no longer caches fetch by default) and
+      // tagged per site so /api/revalidate can purge one site at a time.
+      cache: "force-cache",
+      next: {
+        tags: endpoint.tags,
+      },
     },
-    next: {
-      tags: ["graphql"],
-    },
-  });
+  );
+
+  // The Fontdue server 404s when the requested host doesn't resolve to a
+  // site — surface that as the page's 404 rather than an error.
+  if (response.status === 404) notFound();
 
   if (response.status !== 200) {
     throw new Error("Fontdue request failed");
