@@ -1,7 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
-import { revalidateTag } from "next/cache";
-
-export async function POST(_request: NextRequest) {
-  revalidateTag("graphql");
-  return NextResponse.json({ revalidated: true, now: Date.now() });
-}
+// Fontdue's deploy hook calls this when the site's content changes, purging
+// every cached page and GraphQL response so the next request re-renders.
+export { POST } from "fontdue-js/next/revalidate";

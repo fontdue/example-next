@@ -1,13 +1,14 @@
-// Used when the Fontdue site URL setting (viewer.url) is empty.
-export const fallbackSiteUrl = "http://localhost:3000";
-
 export function notEmpty<TValue>(
-  value: TValue | null | undefined
+  value: TValue | null | undefined,
 ): value is TValue {
   return value !== null && value !== undefined;
 }
 
-export function pluralize(singular: string, plural: string, count: number): string {
+export function pluralize(
+  singular: string,
+  plural: string,
+  count: number,
+): string {
   return count === 1 ? singular : plural;
 }
 
