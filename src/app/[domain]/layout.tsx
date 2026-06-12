@@ -8,7 +8,7 @@ import Image from "next/image";
 import "../../styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { fallbackSiteUrl } from "@/lib/tenant";
+import { fallbackSiteUrl } from "fontdue-js/next";
 import ActiveLink from "@/components/ActiveLink";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";

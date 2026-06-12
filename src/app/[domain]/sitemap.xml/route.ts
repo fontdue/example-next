@@ -1,7 +1,7 @@
 import { fetchGraphql } from "@/lib/graphql";
 import { SitemapQuery } from "@graphql";
 import { notEmpty } from "@/lib/utils";
-import { fallbackSiteUrl } from "@/lib/tenant";
+import { fallbackSiteUrl } from "fontdue-js/next";
 
 // Utility pages (login, font trials) are intentionally left out — they're
 // reachable from the nav but aren't search-relevant content.

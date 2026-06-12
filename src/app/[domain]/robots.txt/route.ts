@@ -1,6 +1,6 @@
 import { fetchGraphql } from "@/lib/graphql";
 import { SiteUrlQuery } from "@graphql";
-import { fallbackSiteUrl } from "@/lib/tenant";
+import { fallbackSiteUrl } from "fontdue-js/next";
 
 // Served at /robots.txt via the host → /[domain] middleware rewrite. A route
 // handler rather than the app/robots.ts convention because that convention
