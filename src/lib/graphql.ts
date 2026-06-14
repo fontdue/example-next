@@ -1,15 +1,18 @@
-import { promises as fs } from "fs";
 import path from "path";
+import { processImport } from "@graphql-tools/import";
+import { print } from "graphql";
 
 const ENDPOINT = `${process.env.NEXT_PUBLIC_FONTDUE_URL}/graphql`;
 
 const getStaticQuery = async (queryName: string) => {
-  let query = await fs.readFile(
+  // Resolve any `#import` statements so the query sent to the server is
+  // self-contained — shared fragments live once in fragments.graphql.
+  const document = processImport(
     path.resolve(process.cwd(), "src", "queries", queryName),
-    "utf8",
+    process.cwd(),
   );
 
-  return query;
+  return print(document);
 };
 
 const fetchGraphql = async <Q, V = void>(

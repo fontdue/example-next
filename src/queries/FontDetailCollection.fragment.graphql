@@ -1,0 +1,35 @@
+fragment FontDetailCollection on FontCollection {
+  id
+  name
+  collectionType
+  isVariableFont
+  cssUrl
+  sku {
+    id
+  }
+  bundles {
+    sku {
+      id
+    }
+  }
+  fontStyles {
+    name
+    cssFamily
+    cssWeight
+    cssStyle
+    webfontSources {
+      url
+      format
+    }
+    sku {
+      id
+    }
+    variableInstances {
+      name
+      coordinates {
+        axis
+        value
+      }
+    }
+  }
+}
