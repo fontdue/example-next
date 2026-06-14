@@ -1,0 +1,33 @@
+#import "./FontDetailCollection.fragment.graphql"
+
+fragment FontDetail on FontCollection {
+  ...FontDetailCollection
+  shortDescription
+  description
+  pdfs {
+    url
+    thumbnailUrl
+    name
+  }
+  featureStyle {
+    cssFamily
+    name
+    webfontSources {
+      url
+      format
+    }
+  }
+  children(collectionTypes: [FAMILY]) {
+    ...FontDetailCollection
+  }
+  images {
+    url
+    description
+    meta {
+      mimeType
+      width
+      height
+    }
+  }
+  minisiteLink
+}
