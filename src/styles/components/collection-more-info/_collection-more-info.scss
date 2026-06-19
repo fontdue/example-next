@@ -27,6 +27,18 @@
     }
   }
 
+  &__languages {
+    &__table {
+      width: 100%;
+      border-collapse: collapse;
+
+      td {
+        padding: 0.25em 0;
+        border-bottom: 1px solid currentColor;
+      }
+    }
+  }
+
   &__specimens {
     &__images {
       display: flex;

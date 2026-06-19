@@ -8,7 +8,18 @@ query RootLayout {
         }
       }
     }
-    pages(first: 12) {
+    pages(first: 6, excludeTags: ["footer"]) {
+      edges {
+        node {
+          id
+          title
+          slug {
+            name
+          }
+        }
+      }
+    }
+    footer: pages(first: 99, tags: ["footer"]) {
       edges {
         node {
           id

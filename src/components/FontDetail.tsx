@@ -22,7 +22,7 @@ type VariableInstance = {
 
 function instanceCSS(instance: VariableInstance): React.CSSProperties {
   const settings = instance.coordinates.map(
-    (coordinate: Coordinate) => `'${coordinate.axis}' ${coordinate.value}`
+    (coordinate: Coordinate) => `'${coordinate.axis}' ${coordinate.value}`,
   );
 
   return {
@@ -31,23 +31,23 @@ function instanceCSS(instance: VariableInstance): React.CSSProperties {
 }
 
 function showBuyButton(
-  collection: FontDetailFragment | FontDetailCollectionFragment
+  collection: FontDetailFragment | FontDetailCollectionFragment,
 ): boolean {
   if (collection.sku) return true;
 
   const hasFontStylesSKU = collection.fontStyles?.some(
-    (style) => style.sku !== null
+    (style) => style.sku !== null,
   );
   if (hasFontStylesSKU) return true;
 
   const hasBundlesSKU = collection.bundles?.some(
-    (bundle) => bundle.sku !== null
+    (bundle) => bundle.sku !== null,
   );
   if (hasBundlesSKU) return true;
 
   if ("children" in collection) {
     const hasChildrenSKU = collection.children?.some((child) =>
-      showBuyButton(child)
+      showBuyButton(child),
     );
     if (hasChildrenSKU) return true;
   }
@@ -61,7 +61,7 @@ interface CollectionStyles_props {
 }
 
 function groupVariableInstances(
-  fontInstances: VariableInstance[] | undefined | null
+  fontInstances: VariableInstance[] | undefined | null,
 ): VariableInstance[][] | undefined {
   if (!fontInstances) return;
   const groupedFontInstances: { [key: string]: VariableInstance[] } = {};
@@ -99,20 +99,23 @@ function groupVariableInstances(
 }
 
 function familyStylesGrouped<
-  T extends { cssFamily: string | null; cssWeight: string | null }
+  T extends { cssFamily: string | null; cssWeight: string | null },
 >(fontStyles: (T | null)[] | null): T[][] | null {
   if (!fontStyles) return null;
-  const groups = fontStyles.filter(notEmpty).reduce((groups, style) => {
-    const key = `${style.cssFamily}-${style.cssWeight}`;
+  const groups = fontStyles.filter(notEmpty).reduce(
+    (groups, style) => {
+      const key = `${style.cssFamily}-${style.cssWeight}`;
 
-    if (!groups[key]) {
-      groups[key] = [];
-    }
+      if (!groups[key]) {
+        groups[key] = [];
+      }
 
-    groups[key].push(style);
+      groups[key].push(style);
 
-    return groups;
-  }, {} as Record<string, T[]>);
+      return groups;
+    },
+    {} as Record<string, T[]>,
+  );
   return Object.values(groups);
 }
 
@@ -141,7 +144,7 @@ function CollectionStyles({ collection, isSubfamily }: CollectionStyles_props) {
                         style={instanceCSS(instance)}
                         className="collection-styles__style"
                       >
-                        {"Aa "}
+                        {style.keyCharacters}{" "}
                       </span>
                     ))}
                   </span>
@@ -207,7 +210,6 @@ function FontDetail({ collection }: FontDetailProps) {
 
         <div className="collection-info__styles">
           {collection.collectionType === "family" &&
-          !collection.isVariableFont &&
           (collection.fontStyles?.length ?? 0) > 1 ? (
             <CollectionStyles collection={collection} isSubfamily={false} />
           ) : null}
@@ -245,29 +247,54 @@ function FontDetail({ collection }: FontDetailProps) {
             <FontdueHTML html={collection.description} />
           </div>
         ) : null}
-        {collection.pdfs?.length ? (
-          <div className="collection-more-info__specimens">
-            <h3 className="specimen-more-info__specimens__label">
-              {pluralize("PDF Specimen", "PDFs", collection.pdfs.length)}
-            </h3>
-            <div className="collection-more-info__specimens__images">
-              {collection.pdfs.map((pdf, i) => (
-                <Link
-                  key={i}
-                  href={pdf!.url!}
-                  target="_blank"
-                  className="collection-more-info__specimens__link"
-                >
-                  <div className="collection-more-info__specimens__image">
-                    {pdf!.thumbnailUrl && (
-                      <img src={pdf!.thumbnailUrl} alt="" />
-                    )}
-                  </div>
-                </Link>
-              ))}
+        <div className="collection-more-info__group">
+          {collection.pdfs?.length ? (
+            <div className="collection-more-info__specimens">
+              <h3 className="specimen-more-info__specimens__label">
+                {pluralize("PDF Specimen", "PDFs", collection.pdfs.length)}
+              </h3>
+              <div className="collection-more-info__specimens__images">
+                {collection.pdfs.map((pdf, i) => (
+                  <Link
+                    key={i}
+                    href={pdf!.url!}
+                    target="_blank"
+                    className="collection-more-info__specimens__link"
+                  >
+                    <div className="collection-more-info__specimens__image">
+                      {pdf!.thumbnailUrl && (
+                        <img src={pdf!.thumbnailUrl} alt="" />
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-        ) : null}
+          ) : null}
+          {(() => {
+            const languages = collection.languages?.filter(notEmpty) ?? [];
+            return languages.length ? (
+              <div className="collection-more-info__languages">
+                <h3>
+                  {pluralize(
+                    "Supported language",
+                    "Supported languages",
+                    languages.length,
+                  )}
+                </h3>
+                <table className="collection-more-info__languages__table">
+                  <tbody>
+                    {languages.map((language, i) => (
+                      <tr key={i}>
+                        <td>{language}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null;
+          })()}
+        </div>
       </div>
 
       <CharacterViewer collectionId={collection.id} />

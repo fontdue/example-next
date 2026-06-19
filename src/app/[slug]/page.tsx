@@ -1,9 +1,6 @@
-import fs from "fs/promises";
-import path from "path";
 import FontdueHTML from "@/components/FontdueHTML";
 import { fetchGraphql } from "@/lib/graphql";
-import { notEmpty } from "@/lib/utils";
-import { PagePathsQuery, PageQuery, PageQueryVariables } from "@graphql";
+import { PageQuery, PageQueryVariables } from "@graphql";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
@@ -21,10 +18,8 @@ async function getPage(slug: string) {
   return viewer.slug?.page;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const { slug } = await props.params;
   const page = await getPage(slug);
   if (!page) notFound();
   return {
@@ -34,8 +29,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function Page({ params }: PageProps) {
-  const { slug } = await params;
+export default async function Page(props: PageProps) {
+  const { slug } = await props.params;
   const page = await getPage(slug);
   if (!page) notFound();
 
@@ -48,21 +43,4 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  // Solves an issue with Next.js when these [slug]/page.js clash with named
-  // name/page.js routes
-  const dirs = (
-    await fs.readdir(path.resolve(__dirname, ".."), { withFileTypes: true })
-  )
-    .filter((dir) => dir.isDirectory())
-    .map((dir) => dir.name);
-
-  const data = await fetchGraphql<PagePathsQuery>("PagePaths.graphql");
-  const slugs =
-    data.viewer.pages?.edges
-      ?.map((edge) => edge?.node?.slug?.name)
-      .filter(notEmpty)
-      .filter((slug) => !dirs.includes(slug)) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
-}
+export { pageParams as generateStaticParams } from "@/lib/static-params";

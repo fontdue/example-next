@@ -20,11 +20,13 @@
 
   &__links {
     @include fontSize(18px, 22px);
+    margin-bottom: 30px;
 
     @include minWidth(tablet) {
       display: grid;
-      grid-template-columns: repeat(var(--columns), 1fr);
-      grid-column-gap: var(--gutter);
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      grid-column-gap: 30px;
     }
   }
 

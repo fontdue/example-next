@@ -1,4 +1,36 @@
 .licenses-page {
+  &__nav {
+    grid-column: 1 / span 1;
+
+    &__title {
+      margin-top: 0;
+      margin-bottom: 1.5em;
+
+      a {
+        @include resetLink();
+      }
+    }
+
+    &__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    &__link {
+      @include resetLink();
+      display: block;
+
+      &:hover {
+        color: var(--link_hover_color);
+      }
+
+      &.active {
+        color: var(--link_hover_color);
+      }
+    }
+  }
+
   &__list {
     margin: 0;
     padding: 0;

@@ -37,7 +37,7 @@ export default function PreloadWebfonts({
 }) {
   if (!style) return null;
   const source = style.webfontSources?.find(
-    (source) => source?.format === "woff2"
+    (source) => source?.format === "woff2",
   );
   if (source?.url) {
     ReactDOM.preload(source.url, { as: "font" });

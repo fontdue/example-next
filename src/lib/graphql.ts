@@ -1,8 +1,8 @@
 import path from "path";
+import { notFound } from "next/navigation";
+import { createFontdueFetch, FontdueNotFoundError } from "fontdue-js/server";
 import { processImport } from "@graphql-tools/import";
 import { print } from "graphql";
-
-const ENDPOINT = `${process.env.NEXT_PUBLIC_FONTDUE_URL}/graphql`;
 
 const getStaticQuery = async (queryName: string) => {
   // Resolve any `#import` statements so the query sent to the server is
@@ -17,32 +17,22 @@ const getStaticQuery = async (queryName: string) => {
 
 const fetchGraphql = async <Q, V = void>(
   queryName: string,
-  variables: V | void,
+  variables?: V,
 ): Promise<Q> => {
   const query = await getStaticQuery(queryName);
-  const response = await fetch(`${ENDPOINT}?query=${queryName}`, {
-    method: "POST",
-    body: JSON.stringify({ query, variables }),
-    headers: {
-      "content-type": "application/json",
-    },
-    next: {
-      tags: ["graphql"],
-    },
-  });
 
-  if (response.status !== 200) {
-    throw new Error("Fontdue request failed");
+  // One transport for every fetch: createFontdueFetch targets the site and,
+  // while an admin is previewing, carries the token that reveals hidden fonts.
+  const fetchFontdue = createFontdueFetch();
+
+  try {
+    return await fetchFontdue<Q, V>(queryName, query, variables);
+  } catch (error) {
+    // The Fontdue server 404s when the requested host doesn't resolve to a
+    // site — surface that as the page's 404 rather than an error.
+    if (error instanceof FontdueNotFoundError) notFound();
+    throw error;
   }
-
-  const json = await response.json();
-
-  const errorMessage = json.errors?.[0]?.message;
-  if (errorMessage) {
-    throw new Error(`Fontdue graphql request error: ${errorMessage}`);
-  }
-
-  return json.data;
 };
 
 export { fetchGraphql, getStaticQuery };
