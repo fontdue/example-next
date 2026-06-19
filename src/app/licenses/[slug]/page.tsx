@@ -1,16 +1,12 @@
 import React from "react";
-import {
-  LicensePathsQuery,
-  LicenseQuery,
-  LicenseQueryVariables,
-} from "@graphql";
+import Link from "next/link";
+import { LicenseQuery, LicenseQueryVariables } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { notEmpty } from "@/lib/utils";
 import { notFound, redirect } from "next/navigation";
 import FontdueHTML from "@/components/FontdueHTML";
 import { Metadata } from "next";
 
-interface FontProps {
+interface LicenseProps {
   params: Promise<{ slug: string }>;
 }
 
@@ -20,10 +16,8 @@ async function getData(slug: string) {
   });
 }
 
-export async function generateMetadata({
-  params,
-}: FontProps): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(props: LicenseProps): Promise<Metadata> {
+  const { slug } = await props.params;
   const data = await getData(slug);
   const license = data.viewer.slug?.license;
   if (!license) notFound();
@@ -33,8 +27,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function License({ params }: FontProps) {
-  const { slug } = await params;
+export default async function License(props: LicenseProps) {
+  const { slug } = await props.params;
   const data = await getData(slug);
 
   const license = data.viewer.slug?.license;
@@ -44,8 +38,45 @@ export default async function License({ params }: FontProps) {
   // text only backs licenses without one.
   if (license.pdf?.url) redirect(license.pdf.url);
 
+  const licenses = data.viewer.licenses ?? [];
+
   return (
-    <main className="page">
+    <main className="page licenses-page">
+      <nav className="licenses-page__nav">
+        <h1 className="licenses-page__nav__title">
+          <Link href="/licenses">Font licenses</Link>
+        </h1>
+
+        <ul className="licenses-page__nav__list">
+          {licenses.map((sibling) => {
+            const active = sibling.slug?.name === slug;
+            const className = `licenses-page__nav__link${
+              active ? " active" : ""
+            }`;
+            const label = (
+              <span className="licenses-page__nav__name">{sibling.name}</span>
+            );
+
+            return (
+              <li className="licenses-page__nav__item" key={sibling.id}>
+                {sibling.pdf?.url ? (
+                  <a className={className} href={sibling.pdf.url}>
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    className={className}
+                    href={`/licenses/${sibling.slug?.name}`}
+                  >
+                    {label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
       <article className="markdown page__body">
         <FontdueHTML html={license.text} />
       </article>
@@ -53,12 +84,4 @@ export default async function License({ params }: FontProps) {
   );
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const data = await fetchGraphql<LicensePathsQuery>("LicensePaths.graphql");
-  const slugs =
-    data.viewer.licenses
-      ?.map((license) => license.slug?.name)
-      .filter(notEmpty) ?? [];
-
-  return slugs.map((slug) => ({ slug }));
-}
+export { licenseParams as generateStaticParams } from "@/lib/static-params";

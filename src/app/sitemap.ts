@@ -1,11 +1,12 @@
 import { MetadataRoute } from "next";
 import { fetchGraphql } from "@/lib/graphql";
 import { SitemapQuery } from "@graphql";
-import { notEmpty, fallbackSiteUrl } from "@/lib/utils";
+import { notEmpty } from "@/lib/utils";
+import { requireSiteUrl } from "@/lib/site-url";
 
-// Utility pages (login, font trials) are intentionally left out — they're
-// reachable from the nav but aren't search-relevant content.
-const EXCLUDED_PAGE_SLUGS = new Set(["customer-login", "test-fonts"]);
+// The login page is intentionally left out — it's reachable from the nav
+// but isn't search-relevant content.
+const EXCLUDED_PAGE_SLUGS = new Set(["customer-login"]);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { viewer } = await fetchGraphql<SitemapQuery>("Sitemap.graphql");
@@ -40,11 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(articles.length ? ["/articles"] : []),
     ...articles.map((slug) => `/article/${slug}`),
     ...pages.map((slug) => `/${slug}`),
+    "/test-fonts",
     "/licenses",
     ...licenses.map((slug) => `/licenses/${slug}`),
   ]);
 
+  const base = requireSiteUrl(viewer.url);
   return Array.from(paths).map((path) => ({
-    url: new URL(path, viewer.url ?? fallbackSiteUrl).toString(),
+    url: new URL(path, base).toString(),
   }));
 }

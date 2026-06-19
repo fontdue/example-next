@@ -10,5 +10,13 @@ query License($slug: String!) {
         }
       }
     }
+    licenses {
+      id
+      name
+      slug { name }
+      pdf {
+        url
+      }
+    }
   }
 }

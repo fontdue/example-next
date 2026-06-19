@@ -5,10 +5,9 @@ import parse from "html-react-parser";
 import { Metadata } from "next";
 import "fontdue-js/fontdue.css";
 import Image from "next/image";
-import "../styles/main.scss";
+import "@/styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
-import { fallbackSiteUrl } from "@/lib/utils";
 import ActiveLink from "@/components/ActiveLink";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";
@@ -26,6 +25,10 @@ function styleFamilyName(
   return `"${style.cssFamily} ${style.name}"`;
 }
 
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
 async function getData() {
   return fetchGraphql<RootLayoutQuery>("RootLayout.graphql");
 }
@@ -34,7 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const { viewer } = await getData();
 
   return {
-    metadataBase: new URL(viewer.url ?? fallbackSiteUrl),
+    // The canonical site URL set in the Fontdue admin (Settings → Website
+    // settings). The store API host is usually not the site's public host,
+    // so there is deliberately no env-var fallback.
+    metadataBase: viewer.url ? new URL(viewer.url) : null,
     title: {
       template: `%s | ${viewer.settings?.title}`,
       default: viewer.settings?.title ?? "",
@@ -43,14 +49,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout(props: LayoutProps) {
+  const { children } = props;
   const { viewer } = await getData();
 
   const pages = viewer.pages?.edges?.map((edge) => edge!.node!);
+  const footerPages = viewer.footer?.edges?.map((edge) => edge!.node!);
 
   const moreThanOneCollection =
     (viewer.fontCollections?.edges?.length ?? 0) > 1;
@@ -73,6 +77,7 @@ export default async function RootLayout({
         />
 
         <FontdueProvider
+          // No url prop needed: fontdue-js reads NEXT_PUBLIC_FONTDUE_URL.
           config={{
             typeTester: { selectable: true, variableAxesPosition: "auto" },
           }}
@@ -98,20 +103,20 @@ export default async function RootLayout({
                   </h1>
                 )}
               </div>
-              {moreThanOneCollection && (
-                <ActiveLink className="nav__link" href="/">
-                  Fonts
-                </ActiveLink>
-              )}
-              {pages?.map((node) => (
-                <ActiveLink
-                  href={`/${node.slug?.name}`}
-                  className="nav__link"
-                  key={node.id}
-                >
-                  {node.title}
-                </ActiveLink>
-              ))}
+              <ActiveLink className="nav__link" href="/">
+                {moreThanOneCollection ? "Fonts" : "Home"}
+              </ActiveLink>
+              {pages
+                ?.filter((node) => node.slug?.name !== "customer-login")
+                .map((node) => (
+                  <ActiveLink
+                    href={`/${node.slug?.name}`}
+                    className="nav__link"
+                    key={node.id}
+                  >
+                    {node.title}
+                  </ActiveLink>
+                ))}
             </div>
 
             <div className="nav__item" data-label="login">
@@ -127,6 +132,19 @@ export default async function RootLayout({
           <main className="main">{children}</main>
 
           <footer className="footer">
+            {footerPages && footerPages.length > 0 && (
+              <div className="footer__links">
+                {footerPages.map((node) => (
+                  <ActiveLink
+                    href={`/${node.slug?.name}`}
+                    className="footer__link"
+                    key={node.id}
+                  >
+                    {node.title}
+                  </ActiveLink>
+                ))}
+              </div>
+            )}
             <div className="footer__copyright">
               <FontdueHTML html={viewer.settings?.footerText} />
             </div>

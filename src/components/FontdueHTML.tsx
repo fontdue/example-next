@@ -42,6 +42,7 @@ export default function FontdueHTML({ html }: FontdueHTML_props) {
             return <NewsletterSignup {...props} />;
           }
           if (domNode.name === "fontdue-character-viewer") {
+            // @ts-ignore
             return <CharacterViewer {...props} />;
           }
           if (domNode.name === "fontdue-type-tester") {
@@ -52,6 +53,7 @@ export default function FontdueHTML({ html }: FontdueHTML_props) {
             return <TypeTesters {...props} />;
           }
           if (domNode.name === "fontdue-buy-button") {
+            // @ts-ignore
             return <BuyButton {...props} />;
           }
           if (domNode.name === "fontdue-cart-button") {
