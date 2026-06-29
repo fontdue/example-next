@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@graphql-tools/import": "^7.1.14",
-    "fontdue-js": "3.0.1",
+    "fontdue-js": "3.0.2",
     "graphql": "^16.14.2",
     "html-react-parser": "^5",
     "next": "^15.5.14",
