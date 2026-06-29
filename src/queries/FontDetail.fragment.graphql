@@ -3,7 +3,7 @@
 fragment FontDetail on FontCollection {
   ...FontDetailCollection
   shortDescription
-  description
+  description(format: HTML)
   pdfs {
     url
     thumbnailUrl

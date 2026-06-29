@@ -243,7 +243,7 @@ function FontDetail({ collection }: FontDetailProps) {
 
       <div className="collection-more-info">
         {collection.description ? (
-          <div className="collection-more-info__description">
+          <div className="collection-more-info__description markdown">
             <FontdueHTML html={collection.description} />
           </div>
         ) : null}
@@ -282,15 +282,11 @@ function FontDetail({ collection }: FontDetailProps) {
                     languages.length,
                   )}
                 </h3>
-                <table className="collection-more-info__languages__table">
-                  <tbody>
-                    {languages.map((language, i) => (
-                      <tr key={i}>
-                        <td>{language}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="collection-more-info__languages__list">
+                  {languages.map((language, i) => (
+                    <div key={i}>{language}</div>
+                  ))}
+                </div>
               </div>
             ) : null;
           })()}
