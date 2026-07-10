@@ -79,7 +79,11 @@ export default async function RootLayout(props: LayoutProps) {
         <FontdueProvider
           // No url prop needed: fontdue-js reads NEXT_PUBLIC_FONTDUE_URL.
           config={{
-            typeTester: { selectable: true, variableAxesPosition: "auto" },
+            typeTester: {
+              selectable: true,
+              variableAxesPosition: "auto",
+              size: { min: 16, max: 400 },
+            },
           }}
         >
           <nav className="nav" data-border="true">
