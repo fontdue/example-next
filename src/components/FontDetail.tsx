@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FontDetailFragment, FontDetailCollectionFragment } from "@graphql";
 import TypeTesters from "fontdue-js/TypeTesters";
+import FeatureTesters from "fontdue-js/FeatureTesters";
 import CharacterViewer from "fontdue-js/CharacterViewer";
 import BuyButton from "fontdue-js/BuyButton";
 import FontStyle from "./FontStyle";
@@ -292,6 +293,8 @@ function FontDetail({ collection }: FontDetailProps) {
           })()}
         </div>
       </div>
+
+      <FeatureTesters collectionId={collection.id} />
 
       <CharacterViewer collectionId={collection.id} />
     </>

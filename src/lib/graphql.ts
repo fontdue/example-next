@@ -31,6 +31,13 @@ const fetchGraphql = async <Q, V = void>(
     // The Fontdue server 404s when the requested host doesn't resolve to a
     // site — surface that as the page's 404 rather than an error.
     if (error instanceof FontdueNotFoundError) notFound();
+
+    // A password-protected collection the visitor has unlocked is recovered
+    // inside fontdue-js automatically: the Next adapter reads the node-access
+    // cookie, folds the token into this render's config (so the page fetch and
+    // the embedded server components both resolve) and retries — no plumbing
+    // here. If they haven't unlocked it, FontduePasswordProtectedError
+    // propagates; rethrow so the page can render the password form.
     throw error;
   }
 };
