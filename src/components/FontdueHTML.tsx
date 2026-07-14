@@ -5,6 +5,7 @@ import TestFontsForm from "fontdue-js/TestFontsForm";
 import NewsletterSignup from "fontdue-js/NewsletterSignup";
 import CharacterViewer from "fontdue-js/CharacterViewer";
 import TypeTesters from "fontdue-js/TypeTesters";
+import FeatureTesters from "fontdue-js/FeatureTesters";
 import TypeTester from "fontdue-js/TypeTester";
 import BuyButton from "fontdue-js/BuyButton";
 import CartButton from "fontdue-js/CartButton";
@@ -51,6 +52,10 @@ export default function FontdueHTML({ html }: FontdueHTML_props) {
           }
           if (domNode.name === "fontdue-type-testers") {
             return <TypeTesters {...props} />;
+          }
+          if (domNode.name === "fontdue-feature-testers") {
+            // @ts-ignore
+            return <FeatureTesters {...props} />;
           }
           if (domNode.name === "fontdue-buy-button") {
             // @ts-ignore
