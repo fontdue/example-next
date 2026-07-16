@@ -19,7 +19,14 @@ export default async function Home() {
 
   if (collections?.length === 1) {
     const firstCollection = data.viewer.firstCollection?.edges?.[0]?.node;
-    if (firstCollection) return <FontDetail collection={firstCollection} />;
+    if (firstCollection?.slug?.name) {
+      return (
+        <FontDetail
+          collection={firstCollection}
+          collectionSlug={firstCollection.slug.name}
+        />
+      );
+    }
   }
 
   return (
