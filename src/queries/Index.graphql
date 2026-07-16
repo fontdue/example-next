@@ -10,6 +10,9 @@ query Index {
       edges {
         node {
           ...FontDetail
+          slug {
+            name
+          }
         }
       }
     }
