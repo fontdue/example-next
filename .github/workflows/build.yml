@@ -1,0 +1,80 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      # Write so the lockfile-repair step below can push to Dependabot branches.
+      contents: write
+    env:
+      # Public staging backend. The build prerenders pages, so it needs a
+      # reachable Fontdue server -- there is nothing secret here.
+      NEXT_PUBLIC_FONTDUE_URL: https://example.fontdue.xyz
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Dependabot PRs: check out the branch itself rather than the
+          # ephemeral merge ref so the lockfile repair can be pushed back.
+          ref: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.head.ref || '' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Dependabot regenerates package-lock.json with a newer npm (11) that
+      # omits entries npm 10 (node 22, and most dev machines) requires: nested
+      # copies for optional peer deps whose hoisted version is too old. `npm ci`
+      # then fails with EUSAGE "Missing: <pkg> from lock file". Regenerating
+      # with this runner's npm yields a lockfile both npm 10 and 11 accept.
+      - name: Repair Dependabot lockfile
+        if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+        run: |
+          npm install --package-lock-only
+          if ! git diff --quiet package-lock.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Regenerate package-lock.json with npm 10" package-lock.json
+            git push
+          fi
+
+      - run: npm ci
+      - run: npm run build
+
+  # Dependabot opens fontdue-js bumps (see .github/dependabot.yml). `needs: build`
+  # is what makes merging them unattended safe -- without it this would merge a
+  # release that doesn't compile against this framework.
+  #
+  # The repository_owner check keeps unattended merges scoped to the fontdue
+  # org. If you cloned this repo as a starting point for your own site, you
+  # still get Dependabot's fontdue-js update PRs and the build check above,
+  # but nothing lands on your main branch without you. If you'd like updates
+  # to merge themselves once they build -- say your site deploys from main and
+  # you want font releases to flow through unattended -- change 'fontdue' to
+  # your own GitHub username or org.
+  automerge:
+    needs: build
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.repository_owner == 'fontdue'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: dependabot/fetch-metadata@v2
+        id: meta
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Major bumps land in a human's inbox: those are the ones that break templates.
+      - if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        run: gh pr merge --squash --delete-branch "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

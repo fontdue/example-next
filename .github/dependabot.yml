@@ -1,0 +1,14 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+    # Only fontdue-js. Without this allow-list Dependabot would also start
+    # opening PRs for Next, React and every other dependency in the tree.
+    allow:
+      - dependency-name: fontdue-js
+    # Bump the pin in place (3.0.5 -> 3.0.6) rather than widening it to a range.
+    versioning-strategy: increase
+    open-pull-requests-limit: 1
