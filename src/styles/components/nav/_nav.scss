@@ -1,11 +1,39 @@
 .nav {
   display: grid;
   grid-gap: var(--gutter);
-  grid-template-columns: auto max-content max-content;
   align-items: center;
   border-bottom: 1px solid var(--horizontal_rule_color);
   padding: 20px 0;
   min-height: 70px;
+
+  // Narrow: the wordmark, the cart and the toggle. Everything else moves into
+  // the menu behind the toggle.
+  grid-template-columns: auto max-content max-content;
+
+  @include minWidth(desktop) {
+    // The menu dissolves at this width, so its two groups become columns of
+    // the bar in their own right: wordmark, links, login, cart. The wordmark
+    // keeps the 220px column the page grid opens with, so the links start
+    // where a page's body does.
+    grid-template-columns: 220px auto max-content max-content;
+  }
+
+  @include maxWidth(desktop) {
+    // The panel hangs off the bar rather than off the viewport, so it meets
+    // the rule under it whatever height a logo gives the bar.
+    position: relative;
+
+    // While the menu is open the bar pins itself to the top of the screen, so
+    // the panel below always runs to the bottom edge instead of trailing off
+    // it on a page that was already scrolled. Closed, the bar scrolls away
+    // with the page exactly as it always has.
+    &:has(.nav__panel[data-open="true"]) {
+      position: sticky;
+      top: 0;
+      z-index: z-index(site, nav);
+      background-color: var(--primary_background_color);
+    }
+  }
 
   &__links {
     display: grid;
@@ -13,9 +41,25 @@
     align-items: center;
 
     @include minWidth(desktop) {
-      grid-template-columns: 220px;
       grid-auto-flow: column;
       grid-auto-columns: max-content;
+      // Every gap in the bar is the page gutter, but the links have always
+      // stood 30px off the wordmark's column rather than a gutter's width.
+      // This is the difference between the two, so they begin exactly where
+      // they always have. It goes negative above 1280, where the gutter is
+      // wider than 30px.
+      margin-left: calc(30px - var(--gutter));
+    }
+
+    // In the menu each link is a row of its own, so they need room between
+    // them and a hit area taller than the text.
+    @include maxWidth(desktop) {
+      grid-row-gap: 12px;
+      justify-items: start;
+
+      .nav__link {
+        padding: 8px 0;
+      }
     }
   }
 
@@ -24,7 +68,126 @@
     text-decoration: none;
   }
 
-  &__item[data-label="cart"] {
-    margin-left: auto;
+  // Dissolved on wide screens so the groups it holds sit directly in the bar's
+  // grid; a box of its own only once it is a menu.
+  &__panel {
+    display: contents;
+
+    @include maxWidth(desktop) {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      // Bleeds back through the page gutters so the panel covers the full
+      // width, then puts them back as padding so what it holds stays on the
+      // same line as the wordmark above it.
+      left: calc(-1 * var(--outer-gutter));
+      right: calc(-1 * var(--outer-gutter));
+      height: calc(100dvh - 100%);
+      padding: 30px var(--outer-gutter);
+      background-color: var(--primary_background_color);
+      // The bar's own rule is painted under the panel, so the panel carries
+      // the same one to keep it unbroken.
+      border-top: 1px solid var(--horizontal_rule_color);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      z-index: z-index(site, nav);
+
+      // Closed panels are removed outright rather than hidden, which also
+      // takes their links out of the tab order.
+      &[data-open="false"] {
+        display: none;
+      }
+    }
+  }
+
+  // Pushed to the foot of the menu, under a rule: the account link is not one
+  // of the site's pages and should not read as one.
+  &__item[data-label="login"] {
+    @include maxWidth(desktop) {
+      margin-top: auto;
+      padding-top: 30px;
+      border-top: 1px solid var(--horizontal_rule_color);
+    }
+  }
+
+  // Only ever visible once the links have collapsed.
+  &__toggle {
+    @include resetButton();
+    display: none;
+
+    @include maxWidth(desktop) {
+      display: flex;
+      align-items: center;
+      // Last in the bar, though not last in the markup: the panel has to
+      // follow the button that opens it, which puts the cart after both.
+      order: 1;
+      color: var(--primary_text_color);
+      // Widened on the leading edge only: the trailing edge stays flush with
+      // the page gutter.
+      padding: 10px 0 10px 20px;
+    }
+
+    &:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: 4px;
+    }
+  }
+
+  // Three hairlines at the weight of every other rule on the page, which is
+  // why this is drawn rather than set as an icon.
+  &__burger {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 1px;
+    background-color: currentColor;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: currentColor;
+      transition:
+        transform 0.2s ease-out,
+        top 0.2s ease-out;
+    }
+
+    &::before {
+      top: -5px;
+    }
+
+    &::after {
+      top: 5px;
+    }
+  }
+
+  // Driven straight off `aria-expanded`, so the open state lives in exactly one
+  // place: the middle rule drops out and the outer two cross.
+  &__toggle[aria-expanded="true"] &__burger {
+    background-color: transparent;
+
+    &::before,
+    &::after {
+      top: 0;
+    }
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__burger::before,
+  .nav__burger::after {
+    transition: none;
   }
 }
