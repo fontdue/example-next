@@ -9,6 +9,7 @@ import "@/styles/main.scss";
 import { RootLayoutQuery } from "@graphql";
 import { fetchGraphql } from "@/lib/graphql";
 import ActiveLink from "@/components/ActiveLink";
+import NavMenu from "@/components/NavMenu";
 import PreloadWebfonts from "@/components/PreloadWebfonts";
 import FontdueHTML from "@/components/FontdueHTML";
 
@@ -86,48 +87,52 @@ export default async function RootLayout(props: LayoutProps) {
             },
           }}
         >
-          <nav className="nav" data-border="true">
-            <div className="nav__links">
-              <div className="nav__item" data-label="home">
-                {viewer.logo ? (
+          <nav className="nav" data-border="true" aria-label="Main">
+            <div className="nav__item" data-label="home">
+              {viewer.logo ? (
+                <ActiveLink href="/" className="nav__link">
+                  <Image
+                    src={viewer.logo.url}
+                    alt="Logo"
+                    width={(viewer.logo.meta.width ?? 100) / 2}
+                    height={(viewer.logo.meta.height ?? 100) / 2}
+                    priority
+                  />
+                </ActiveLink>
+              ) : (
+                <h1>
                   <ActiveLink href="/" className="nav__link">
-                    <Image
-                      src={viewer.logo.url}
-                      alt="Logo"
-                      width={(viewer.logo.meta.width ?? 100) / 2}
-                      height={(viewer.logo.meta.height ?? 100) / 2}
-                      priority
-                    />
+                    {viewer.settings?.title}
                   </ActiveLink>
-                ) : (
-                  <h1>
-                    <ActiveLink href="/" className="nav__link">
-                      {viewer.settings?.title}
-                    </ActiveLink>
-                  </h1>
-                )}
-              </div>
-              <ActiveLink className="nav__link" href="/">
-                {moreThanOneCollection ? "Fonts" : "Home"}
-              </ActiveLink>
-              {pages
-                ?.filter((node) => node.slug?.name !== "customer-login")
-                .map((node) => (
-                  <ActiveLink
-                    href={`/${node.slug?.name}`}
-                    className="nav__link"
-                    key={node.id}
-                  >
-                    {node.title}
-                  </ActiveLink>
-                ))}
+                </h1>
+              )}
             </div>
 
-            <div className="nav__item" data-label="login">
-              <ActiveLink className="nav__link" href="/customer-login">
-                Log in
-              </ActiveLink>
-            </div>
+            <NavMenu>
+              <div className="nav__links">
+                <ActiveLink className="nav__link" href="/">
+                  {moreThanOneCollection ? "Fonts" : "Home"}
+                </ActiveLink>
+                {pages
+                  ?.filter((node) => node.slug?.name !== "customer-login")
+                  .map((node) => (
+                    <ActiveLink
+                      href={`/${node.slug?.name}`}
+                      className="nav__link"
+                      key={node.id}
+                    >
+                      {node.title}
+                    </ActiveLink>
+                  ))}
+              </div>
+
+              <div className="nav__item" data-label="login">
+                <ActiveLink className="nav__link" href="/customer-login">
+                  Log in
+                </ActiveLink>
+              </div>
+            </NavMenu>
+
             <div className="nav__item" data-label="cart">
               <CartButton buttonStyle="icon" />
             </div>

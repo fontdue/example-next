@@ -1,5 +1,27 @@
 .markdown {
-  max-width: 40rem;
+  // The measure belongs to the reading, not to the column. Text keeps a
+  // comfortable line length, while anything that is looked at rather than
+  // read is free to use the whole width it has been given.
+  > * {
+    max-width: 40rem;
+  }
+
+  > :is(img, picture, figure, video, iframe, table) {
+    max-width: 100%;
+  }
+
+  // Lists are indented, so they give that back to finish flush with the
+  // paragraphs around them rather than hanging past them.
+  > :is(ul, ol) {
+    max-width: calc(40rem - 1em);
+  }
+
+  // The reset does not cover <hr>, so it still carries the browser's auto
+  // side margins. Those would centre it in an article that is now wider
+  // than the measure, instead of leaving it beside the text.
+  > hr {
+    margin-inline: 0;
+  }
 
   h1 {
     font-size: 2rem;
