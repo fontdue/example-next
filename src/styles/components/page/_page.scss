@@ -8,7 +8,12 @@
   }
 
   &__body {
-    max-width: 40em;
     grid-column: 2 / span 1;
+  }
+
+  // A form is filled in, not read across, so it keeps the reading measure
+  // even though the body around it may now use the whole column.
+  &__form {
+    max-width: 40em;
   }
 }
