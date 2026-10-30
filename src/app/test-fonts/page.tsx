@@ -24,7 +24,9 @@ export default async function TestFontsPage() {
           {page?.text ? <FontdueHTML html={page.text} /> : null}
         </article>
 
-        <TestFontsForm />
+        <div className="page__form">
+          <TestFontsForm />
+        </div>
       </div>
     </main>
   );
