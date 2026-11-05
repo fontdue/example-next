@@ -22,6 +22,14 @@ export type AccessNodeInput = {
   slug: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Who may download a collection’s fonts through the Fontdue desktop app. */
+export enum AppAccess {
+  /** Any signed-in customer, with or without a subscription – a free family. */
+  Customers = 'CUSTOMERS',
+  /** An active library subscription is required – the default. */
+  Subscribers = 'SUBSCRIBERS'
+}
+
 export type ApplyCouponInput = {
   code: InputMaybe<Scalars['String']['input']>;
 };
@@ -46,7 +54,20 @@ export type CreateOrderItemsInput = {
   licenseeIsBillingIdentity: InputMaybe<Scalars['Boolean']['input']>;
   orderVariableSelections: InputMaybe<Array<OrderVariableSelectionInput>>;
   skuIds: Array<InputMaybe<Scalars['ID']['input']>>;
+  tracking: InputMaybe<OrderTrackingInput>;
 };
+
+/**
+ * Which of the storefront's forms submitted `updateCustomer`. The mutation is
+ * shared by the checkout contact step, the newsletter box and the trial-font
+ * request, and the three are otherwise indistinguishable on the server – this
+ * is what lets each emit its own analytics event.
+ */
+export enum CustomerForm {
+  Checkout = 'CHECKOUT',
+  Newsletter = 'NEWSLETTER',
+  TestFonts = 'TEST_FONTS'
+}
 
 export type ExchangeLoginTokenInput = {
   loginToken: Scalars['String']['input'];
@@ -100,6 +121,11 @@ export type LoginInput = {
   email: InputMaybe<Scalars['String']['input']>;
   name: InputMaybe<Scalars['String']['input']>;
   newsletterOptIn: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * A reCAPTCHA token from the sign-in form, when the store has reCAPTCHA
+   * enabled (`settings.recaptchaEnabled`).
+   */
+  recaptchaToken: InputMaybe<Scalars['String']['input']>;
   target: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -118,6 +144,15 @@ export type OrderItemInput = {
   licenseSelections: Array<InputMaybe<LicenseSelectionInput>>;
 };
 
+/** The buyer's browser analytics context – captured onto an order by createOrderItems and updateOrderTracking */
+export type OrderTrackingInput = {
+  analyticsConsent: InputMaybe<Scalars['Boolean']['input']>;
+  anonymousId: InputMaybe<Scalars['String']['input']>;
+  fbc: InputMaybe<Scalars['String']['input']>;
+  fbp: InputMaybe<Scalars['String']['input']>;
+  url: InputMaybe<Scalars['String']['input']>;
+};
+
 export type OrderVariableSelectionInput = {
   countryCode: InputMaybe<Scalars['String']['input']>;
   orderVariableId: Scalars['ID']['input'];
@@ -126,6 +161,10 @@ export type OrderVariableSelectionInput = {
 
 export type RefreshAccessTokenInput = {
   refreshToken: Scalars['String']['input'];
+};
+
+export type RequestLoginCodeInput = {
+  email: Scalars['String']['input'];
 };
 
 export enum Separator {
@@ -141,13 +180,33 @@ export type StartLibraryStripeSubscriptionTrialInput = {
   promotionCode: InputMaybe<Scalars['String']['input']>;
 };
 
+/** A storefront moment `trackStorefrontEvent` records. */
+export enum StorefrontEvent {
+  /** The payment details at checkout are complete – recorded once per order. */
+  PaymentInfoEntered = 'PAYMENT_INFO_ENTERED',
+  /** The buyer changed the licences they’re choosing for a collection. */
+  ProductCustomized = 'PRODUCT_CUSTOMIZED',
+  /** The store modal opened on a font collection. */
+  ProductViewed = 'PRODUCT_VIEWED'
+}
+
 export enum TextFormat {
   Html = 'HTML',
   Markdown = 'MARKDOWN'
 }
 
+export type TrackStorefrontEventInput = {
+  /** The product viewed or customized – a `FontCollection` or a `FontPack` */
+  collectionId: InputMaybe<Scalars['ID']['input']>;
+  event: StorefrontEvent;
+  /** The licences chosen, for `PRODUCT_CUSTOMIZED` – as `createOrderItems` takes them */
+  licenseSelections: InputMaybe<Array<LicenseSelectionInput>>;
+  tracking: InputMaybe<OrderTrackingInput>;
+};
+
 export type UpdateCustomerInput = {
   email: InputMaybe<Scalars['String']['input']>;
+  form: InputMaybe<CustomerForm>;
   name: InputMaybe<Scalars['String']['input']>;
   newsletterOptIn: InputMaybe<Scalars['Boolean']['input']>;
   recaptchaToken: InputMaybe<Scalars['String']['input']>;
@@ -173,6 +232,27 @@ export type UpdateOrderTrackingInput = {
 export type UpdateWebfontDomainsInput = {
   hosts: Array<Scalars['String']['input']>;
 };
+
+export type VerifyLoginCodeInput = {
+  code: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+};
+
+/** Where a font collection, style bundle or font pack is offered on the storefront. */
+export enum Visibility {
+  /** Not on the storefront. Only returned to a signed-in admin previewing hidden content. */
+  Hidden = 'HIDDEN',
+  /** Left out of the Store Modal and other selection lists, but still for sale and still returned by the API. A collection or bundle is reached by an upgrade to it – a superfamily reached by selecting its families, or a variable family included through a bundle; a pack is reached by its Buy Button, slug or id, or a page a site builds for it. */
+  Unlisted = 'UNLISTED',
+  /** Listed and selectable wherever the storefront offers it – the default. */
+  Visible = 'VISIBLE'
+}
+
+/** A webfont file format. */
+export enum WebfontFormat {
+  Woff = 'WOFF',
+  Woff2 = 'WOFF2'
+}
 
 export type ArticleQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -236,7 +316,7 @@ export type LicensePathsQuery = { viewer: { licenses: Array<{ slug: { name: stri
 export type LicensesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LicensesQuery = { viewer: { licenses: Array<{ id: string, name: string | null, slug: { name: string | null } | null, pdf: { url: string | null, thumbnailUrl: string | null } | null }> | null } };
+export type LicensesQuery = { viewer: { licenses: Array<{ id: string, name: string | null, slug: { name: string | null } | null, pdf: { url: string | null, thumbnailUrl: string | null, thumbnailWidth: number | null, thumbnailHeight: number | null } | null }> | null } };
 
 export type PageQueryVariables = Exact<{
   slug: Scalars['String']['input'];
