@@ -208,10 +208,12 @@ async function CollectionHeader({
                 view it.
               </p>
             </article>
-            <NodePasswordForm
-              collectionSlug={collectionSlug}
-              unlockEndpoint="/api/unlock"
-            />
+            <div className="page__form">
+              <NodePasswordForm
+                collectionSlug={collectionSlug}
+                unlockEndpoint="/api/unlock"
+              />
+            </div>
           </div>
         </main>
       );
