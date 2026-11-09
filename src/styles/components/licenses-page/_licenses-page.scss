@@ -57,8 +57,13 @@
       display: block;
       width: 100%;
       height: auto;
-      aspect-ratio: 1275 / 1650;
       border: 1px solid var(--horizontal_rule_color);
+
+      // The image takes its proportions from its width/height attributes;
+      // the empty placeholder has none, so give it a portrait page shape.
+      &--empty {
+        aspect-ratio: 1275 / 1650;
+      }
     }
 
     &__name {
