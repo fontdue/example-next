@@ -36,21 +36,25 @@ export default async function Home() {
         if (!node.slug) return;
 
         return (
-          <h2 key={node.id} className="home__collection">
+          <h2
+            key={node.id}
+            className="home__collection"
+            style={
+              {
+                "--optical-adjustment": node.opticalAdjustment,
+              } as React.CSSProperties
+            }
+          >
             <FontStyle
               familyName={node.featureStyle?.cssFamily}
               styleName={node.featureStyle?.name}
               webfontSources={node.featureStyle?.webfontSources}
               className="home__collection__name"
+              fit
             >
               <Link
                 href={`/fonts/${node.slug.name}`}
                 className="home__collection__link"
-                style={
-                  {
-                    "--optical-adjustment": node.opticalAdjustment,
-                  } as React.CSSProperties
-                }
               >
                 {node.name}
               </Link>
