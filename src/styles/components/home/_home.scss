@@ -10,7 +10,12 @@
 
     &__name {
       --size: 40px;
-      font-size: calc(var(--optical-adjustment, 1) * var(--size));
+      // --fit shrinks names whose longest word is wider than the screen.
+      font-size: calc(
+        var(--optical-adjustment, 1) * var(--size) * var(--fit, 1)
+      );
+      display: inline-block;
+      max-width: 100%;
 
       @include minWidth(desktop) {
         --size: 90px;

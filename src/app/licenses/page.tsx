@@ -38,8 +38,10 @@ export default async function LicensesPage() {
                   className="licenses-page__license__thumbnail"
                   src={license.pdf.thumbnailUrl}
                   alt=""
-                  width={1275}
-                  height={1650}
+                  // Fall back to US Letter proportions when the API
+                  // doesn't report the thumbnail's dimensions.
+                  width={license.pdf.thumbnailWidth ?? 1275}
+                  height={license.pdf.thumbnailHeight ?? 1650}
                   sizes="(min-width: 1000px) 200px, 30vw"
                 />
               ) : (

@@ -31,7 +31,9 @@ export default async function CustomerLoginPage() {
           )}
         </article>
 
-        <CustomerLoginForm />
+        <div className="page__form">
+          <CustomerLoginForm />
+        </div>
       </div>
     </main>
   );
